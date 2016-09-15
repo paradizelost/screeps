@@ -11,14 +11,14 @@ var roleHauler = {
 	    }
 	     var sources = creep.room.find(FIND_DROPPED_ENERGY );
        if(creep.memory.hauling==false){
-            if(creep.pickup(sources[0]) == ERR_NOT_IN_RANGE && creep.carryCapacity/2 > creep.carry.energy) {
+            if(creep.pickup(sources[0]) == ERR_NOT_IN_RANGE && creep.carryCapacity > creep.carry.energy) {
             creep.moveTo(sources[0]);
         }
        }else {
         if(sources != undefined ) 
         { var spawntargets = creep.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
-                       return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&structure.energy < structure.energyCapacity)  
+                       return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity)  
                    }
             });
             var containertargets = creep.room.find(FIND_STRUCTURES, {
