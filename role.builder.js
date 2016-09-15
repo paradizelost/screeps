@@ -13,8 +13,6 @@ var roleBuilder = {
                 usedstorage+=_.sum(allcontainers[i].store)
                 mycapacity+=allcontainers[i].storeCapacity
             }
-            console.log(usedstorage + " " + mycapacity)
-            
             var storagepercent = usedstorage/mycapacity
             
         var ttl = creep.ticksToLive

@@ -2,6 +2,16 @@
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        if(creep.memory.hauling == undefined){creep.memory.hauling=false}
+        if(creep.memory.hauling && creep.carry.energy == 0) {
+            creep.memory.hauling = false;
+            creep.say('gathering');
+	    }
+	    if(!creep.memory.hauling && creep.carry.energy == creep.carryCapacity) {
+	        creep.memory.hauling = true;
+	        creep.say('hauling');
+	    }
+       if(creep.memory.hauling==false){
         if(creep.carryCapacity > creep.carry.energy){
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -27,6 +37,7 @@
                 creep.moveTo(Game.flags.Flag1); 
             }
         }
+       }
  },
     spawn: function(){
         var myrole='hauler2';

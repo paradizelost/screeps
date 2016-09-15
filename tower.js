@@ -25,8 +25,6 @@ var towers = {
                 usedstorage+=_.sum(allcontainers[i].store)
                 mycapacity+=allcontainers[i].storeCapacity
             }
-            console.log(usedstorage + " " + mycapacity)
-            
             var storagepercent = usedstorage/mycapacity
             var importantstructures = tower.room.find(FIND_STRUCTURES, {
             filter: (structure) => {

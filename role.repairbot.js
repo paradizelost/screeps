@@ -11,7 +11,6 @@ var roleRepairbot = {
 	        creep.memory.repairing = true;
 	        creep.say('repairing');
 	    }
-        console.log(creep.name)
        if(creep.memory.repairing==false){
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
