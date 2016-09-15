@@ -14,7 +14,7 @@ var roleRepairbot = {
        if(creep.memory.repairing==false){
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
-               return (structure.structureType == STRUCTURE_CONTAINER &&  structure.store[RESOURCE_ENERGY] > 0)  ;
+                return ((structure.structureType == STRUCTURE_CONTAINER|| structure.structureType == STRUCTURE_STORAGE) &&  structure.store[RESOURCE_ENERGY] > 0)  ;
             }});
         if(creep.withdraw(container,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say("MTSC");
