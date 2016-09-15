@@ -7,6 +7,7 @@ var roleMiner2 = require('role.miner2');
 var roleHauler = require('role.hauler');
 var roleHauler2 = require('role.hauler2');
 var roleWarrior = require('role.warrior');
+var roleRepairbot = require('role.repairbot')
 var runTower = require('tower');
 var roleTowerrecharger = require('role.towerrecharger');
 var purgetype="NONE"
@@ -52,6 +53,7 @@ module.exports.loop = function () {
     roleHauler2.spawn()
     roleTowerrecharger.spawn()
     roleWarrior.spawn()
+    roleRepairbot.spawn()
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
@@ -83,6 +85,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'towerrecharger'){
             roleTowerrecharger.run(creep)
+        }
+        if(creep.memory.role == 'repairbot'){
+            roleRepairbot.run(creep)
         }
     }
 }

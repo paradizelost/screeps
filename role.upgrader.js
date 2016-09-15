@@ -11,11 +11,25 @@ var roleUpgrader = {
 	        creep.memory.upgrading = true;
 	        creep.say('upgrading');
 	    }
+	    var allcontainers = creep.room.find(FIND_STRUCTURES, {
+                filter: (s) => {
+                    return ( s.structureType == STRUCTURE_CONTAINER)
+                }
+            });
+	    var usedstorage=0
+            var mycapacity=0
+            for(var i=0; i < allcontainers.length;i++){
+                usedstorage+=_.sum(allcontainers[i].store)
+                mycapacity+=allcontainers[i].storeCapacity
+            }
+            var storagepercent = usedstorage/mycapacity
 
 	    if(creep.memory.upgrading) {
-            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
-            }
+	        if(storagepercent > .3){
+               if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                  creep.moveTo(creep.room.controller);
+                }
+	        }
         }
         else {
 	       var containers = creep.room.find(FIND_STRUCTURES, {

@@ -2,7 +2,21 @@ var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep,mysource) {
-       
+        var allcontainers = creep.room.find(FIND_STRUCTURES, {
+                filter: (s) => {
+                    return ( s.structureType == STRUCTURE_CONTAINER)
+                }
+            });
+       var usedstorage=0
+            var mycapacity=0
+            for(var i=0; i < allcontainers.length;i++){
+                usedstorage+=_.sum(allcontainers[i].store)
+                mycapacity+=allcontainers[i].storeCapacity
+            }
+            console.log(usedstorage + " " + mycapacity)
+            
+            var storagepercent = usedstorage/mycapacity
+            
         var ttl = creep.ticksToLive
         if(ttl < 300) {
             console.log(creep.name + ': ' + ttl + ' - ' + creep.memory.role )
@@ -22,6 +36,7 @@ var roleBuilder = {
 	    if(creep.memory.building) {
 	        var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
             if(target != undefined) {
+                        if(storagepercent > .4){
                 if(creep.build(target) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(target);
                     if(creep.fatigue<1){
@@ -32,6 +47,7 @@ var roleBuilder = {
                 
                 creep.say("MTF")
                 creep.moveTo(Game.flags.Flag2);
+            }
             }
 	    }
 	    else {
