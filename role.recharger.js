@@ -1,51 +1,44 @@
- var roleHauler2 = {
+ var roleTowerrecharger = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        
-        if(creep.memory.hauling == undefined){creep.memory.hauling=false}
-        if(creep.memory.hauling && creep.carry.energy == 0) {
-            creep.memory.hauling = false;
-            creep.say('gathering');
+        if(creep.memory.recharging && creep.carry.energy == 0) {
+            creep.memory.recharging = false;
+            creep.say('refilling');
 	    }
-	    if(!creep.memory.hauling && creep.carry.energy == creep.carryCapacity) {
-	        creep.memory.hauling = true;
-	        creep.say('hauling');
+	    if(!creep.memory.recharging && creep.carry.energy == creep.carryCapacity) {
+	        creep.memory.recharging = true;
+	        creep.say('building');
 	    }
-       if(creep.memory.hauling==false){
-        if(creep.carryCapacity > creep.carry.energy){
-        var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+
+	    if(!creep.memory.recharging) {
+            var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
-               return ((structure.structureType == STRUCTURE_CONTAINER|| structure.structureType == STRUCTURE_STORAGE) &&  structure.store[RESOURCE_ENERGY] > 0)  ;
+               return ((structure.structureType == STRUCTURE_CONTAINER|| structure.structureType == STRUCTURE_STORAGE) &&  structure.store[RESOURCE_ENERGY] > 1000)  ;
             }});
         if(creep.withdraw(container,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say("MTSC");
             creep.moveTo(container);
             }
-        }
         } else {
             var spawntarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
-                       return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&structure.energy < structure.energyCapacity)  
+                       return (structure.structureType == STRUCTURE_TOWER  && structure.energy < structure.energyCapacity)  
                    }
             });
             if(spawntarget != undefined) {
                 if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('refilling')
                     creep.moveTo(spawntarget);
                 }
-            } else {
-                creep.say('NTD');
-                creep.moveTo(creep.room.memory.hauler2parkx,creep.room.memory.hauler2parky,creep.room.roomName)
-            }
+            } 
         }
  },
-     spawn: function(roomname){
+    spawn: function(roomname){
         var myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         var myroom = Game.rooms[roomname]
         for(var thisspawn in myspawns){
             var spawn = myspawns[thisspawn]
-            var myrole='hauler2';
+            var myrole='towerrecharger';
             var myroles = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role == myrole);
             console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
             if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
@@ -55,4 +48,4 @@
         }
      }
  };
- module.exports = roleHauler2;
+ module.exports = roleTowerrecharger;

@@ -1,7 +1,8 @@
 var roleHauler = {
- run: function(creep) {
+     run: function(creep) {
         if(creep.memory.hauling == undefined){creep.memory.hauling=false}
         if(creep.memory.hauling && creep.carry.energy == 0) {
+            creep.memory.destsource=undefined
             creep.memory.hauling = false;
             creep.say('gathering');
 	    }
@@ -9,51 +10,62 @@ var roleHauler = {
 	        creep.memory.hauling = true;
 	        creep.say('hauling');
 	    }
-	     var sources = creep.room.find(FIND_DROPPED_ENERGY );
+	   var sources = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY );
        if(creep.memory.hauling==false){
-            if(creep.pickup(sources[0]) == ERR_NOT_IN_RANGE && creep.carryCapacity > creep.carry.energy) {
-            creep.moveTo(sources[0]);
-        }
+           if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
+           var mysource=Game.getObjectById(creep.memory.destsource.id)
+           
+           if(creep.pickup(mysource) == ERR_NOT_IN_RANGE && creep.carryCapacity > creep.carry.energy) {
+                 creep.moveTo(mysource);
+            } 
        }else {
         if(sources != undefined ) 
-        { var spawntargets = creep.room.find(FIND_STRUCTURES, {
+        { var spawntargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
                        return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity)  
                    }
             });
-            var containertargets = creep.room.find(FIND_STRUCTURES, {
+            var containertargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
-                       return ((structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) &&  _.sum(structure.store) < structure.storeCapacity)  ;
+                       return ((structure.structureType == STRUCTURE_CONTAINER ) &&  _.sum(structure.store) < structure.storeCapacity)  ;
                    }
 
             });
-            if(spawntargets.length > 0) {
-                if(creep.transfer(spawntargets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawntargets[0]);
+            var storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                       return ((structure.structureType == STRUCTURE_STORAGE ) &&  _.sum(structure.store) < structure.storeCapacity)  ;
+                   }
+
+            });
+            if(spawntargets) {
+                if(creep.transfer(spawntargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(spawntargets);
                 }
-            } else if (containertargets.length > 0) {
-                if(creep.transfer(containertargets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(containertargets[0]);
+            } else if (containertargets) {
+                if(creep.transfer(containertargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(containertargets);
                 }
-            }else {
-                creep.say("")
-                creep.moveTo(Game.flags.Flag1);
+            } else { 
+                if(creep.transfer(storagetargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storagetargets);
+                }
             }
-        }else{ 
-                creep.say("NS,NT")
-                creep.moveTo(Game.flags.Flag1);
-        } 
-       }
-    },
-    spawn: function(){
-        var myrole='hauler';
-        var nummyrole=2;
-        var myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole);
-        if(myroles.length < nummyrole) { 
-            console.log(myrole + 's: ' + myroles.length + ' Needed: ' + nummyrole);
-            var newName = Game.spawns['Spawn1'].createCreep([MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY], undefined, {role: myrole});
-            console.log('Spawning new ' + myrole + ': ' + newName);
         }
-    }
+       }
+     },
+     spawn: function(roomname){
+        var myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        var myroom = Game.rooms[roomname]
+        for(var thisspawn in myspawns){
+            var spawn = myspawns[thisspawn]
+            var myrole='hauler';
+            var myroles = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role == myrole);
+            console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
+            if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
+                var newName = spawn.createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: myrole});
+                console.log('Spawning new ' + myrole + ': ' + newName);
+            }
+        }
+     }
 };
 module.exports = roleHauler;
