@@ -1,7 +1,10 @@
- var roleTowerrecharger = {
+ let roleTowerrecharger = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+       if(creep.memory.originroom === undefined){
+            creep.memory.originroom = creep.room.name
+        }
         if(creep.memory.recharging && creep.carry.energy == 0) {
             creep.memory.recharging = false;
             creep.say('refilling');
@@ -12,7 +15,7 @@
 	    }
 
 	    if(!creep.memory.recharging) {
-            var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
                return ((structure.structureType == STRUCTURE_CONTAINER|| structure.structureType == STRUCTURE_STORAGE) &&  structure.store[RESOURCE_ENERGY] > 1000)  ;
             }});
@@ -21,7 +24,7 @@
             creep.moveTo(container);
             }
         } else {
-            var spawntarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let spawntarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
                        return (structure.structureType == STRUCTURE_TOWER  && structure.energy < structure.energyCapacity)  
                    }
@@ -34,15 +37,14 @@
         }
  },
     spawn: function(roomname){
-        var myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        var myroom = Game.rooms[roomname]
-        for(var thisspawn in myspawns){
-            var spawn = myspawns[thisspawn]
-            var myrole='towerrecharger';
-            var myroles = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role == myrole);
+        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        let myroom = Game.rooms[roomname]
+        for(let spawn of myspawns){
+            let myrole='towerrecharger';
+             let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
             console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
             if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                var newName = spawn.createCreep([CARRY,CARRY,CARRY,MOVE,MOVE], undefined, {role: myrole});
+                let newName = spawn.createCreep([CARRY,CARRY,CARRY,MOVE,MOVE], undefined, {role: myrole});
                 console.log('Spawning new ' + myrole + ': ' + newName);
             }
         }

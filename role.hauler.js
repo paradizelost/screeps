@@ -1,5 +1,8 @@
-var roleHauler = {
+let roleHauler = {
      run: function(creep) {
+        if(creep.memory.originroom === undefined){
+            creep.memory.originroom = creep.room.name
+        }
         if(creep.memory.hauling == undefined){creep.memory.hauling=false}
         if(creep.memory.hauling && creep.carry.energy == 0) {
             creep.memory.destsource=undefined
@@ -10,28 +13,28 @@ var roleHauler = {
 	        creep.memory.hauling = true;
 	        creep.say('hauling');
 	    }
-	   var sources = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY );
+	   let sources = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY );
        if(creep.memory.hauling==false){
            if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
-           var mysource=Game.getObjectById(creep.memory.destsource.id)
+           let mysource=Game.getObjectById(creep.memory.destsource.id)
            
            if(creep.pickup(mysource) == ERR_NOT_IN_RANGE && creep.carryCapacity > creep.carry.energy) {
                  creep.moveTo(mysource);
             } 
-       }else {
+       } else {
         if(sources != undefined ) 
-        { var spawntargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        { let spawntargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
                        return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity)  
                    }
             });
-            var containertargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let containertargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
                        return ((structure.structureType == STRUCTURE_CONTAINER ) &&  _.sum(structure.store) < structure.storeCapacity)  ;
                    }
 
             });
-            var storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
                        return ((structure.structureType == STRUCTURE_STORAGE ) &&  _.sum(structure.store) < structure.storeCapacity)  ;
                    }
@@ -54,15 +57,14 @@ var roleHauler = {
        }
      },
      spawn: function(roomname){
-        var myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        var myroom = Game.rooms[roomname]
-        for(var thisspawn in myspawns){
-            var spawn = myspawns[thisspawn]
-            var myrole='hauler';
-            var myroles = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role == myrole);
+        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        let myroom = Game.rooms[roomname]
+        for(let spawn of myspawns){
+            let myrole='hauler';
+             let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
             console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
             if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                var newName = spawn.createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: myrole});
+                let newName = spawn.createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], undefined, {role: myrole});
                 console.log('Spawning new ' + myrole + ': ' + newName);
             }
         }

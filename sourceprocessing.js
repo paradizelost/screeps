@@ -1,18 +1,21 @@
-var runSources = {
+let runSources = {
      tick: function(roomname) {
-        var sources = Game.rooms[roomname].find(FIND_DROPPED_ENERGY );
-        for(var source of sources){
-            var allhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role=='hauler' );
-            var unassignedhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => (creep.memory.destsource == undefined && creep.memory.role=='hauler'));
-            var assignedhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => (creep.memory.destsource != undefined && creep.memory.role=='hauler'));
-            var myhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => (creep.memory.destsource != undefined && creep.memory.destsource.id==source.id && creep.memory.role=='hauler'));
-            var sourcecount = sources.length
-            var persrc = allhaulers.length / sourcecount
-            if(myhaulers.length >=persrc){break;} else{
+        let sources = Game.rooms[roomname].find(FIND_DROPPED_ENERGY );
+        for(let source of sources){
+            try{
+                let allhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role=='hauler' );
+                let unassignedhaulers = _.filter(allhaulers, (creep) => (creep.memory.destsource == undefined && creep.memory.role=='hauler'));
+                let assignedhaulers = _.filter(allhaulers, (creep) => (creep.memory.destsource != undefined && creep.memory.role=='hauler'));
+                let myhaulers = _.filter(allhaulers, (creep) => (creep.memory.destsource != undefined && creep.memory.destsource.id==source.id && creep.memory.role=='hauler'));
+                let sourcecount = sources.length
+                let persrc = allhaulers.length / sourcecount
+                console.log('My Assigned Haulers: ' +myhaulers.length + ' Max per source:' + persrc + ' Total Haulers:' + allhaulers.length + ' Total Sources:' + sourcecount + ' Unassigned Haulers:' + unassignedhaulers.length)
                 if(unassignedhaulers.length > 0){
-                    unassignedhaulers[0].memory.destsource = source
+                    if(myhaulers.length < persrc){
+                        unassignedhaulers[0].memory.destsource = source
+                    } else {}
                 }
-            }
+            } catch(e){}
         }
      }
 };

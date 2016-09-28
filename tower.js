@@ -9,18 +9,18 @@ var towers = {
         _.forEach(towers, function(tower){
             
             
-            var myclosestDamagedStructure =  tower.room.find(FIND_STRUCTURES, {
+            let myclosestDamagedStructure =  tower.room.find(FIND_STRUCTURES, {
                 filter: (structure) => structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < structure.hitsMax
             }); 
-            var closestDamagedStructure = _.first(_.sortBy(myclosestDamagedStructure, (s)=>s.hits / s.hitsMax));
+            let closestDamagedStructure = _.first(_.sortBy(myclosestDamagedStructure, (s)=>s.hits / s.hitsMax));
             
-            var allcontainers = tower.room.find(FIND_STRUCTURES, {
+            let allcontainers = tower.room.find(FIND_STRUCTURES, {
                 filter: (s) => {
                     return ( s.structureType == STRUCTURE_CONTAINER)
                 }
             });
             if(tower.energy > tower.energyCapacity * .7 ){
-                var importantstructures = tower.room.find(FIND_STRUCTURES, {
+                let importantstructures = tower.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                      return (structure.structureType == STRUCTURE_CONTAINER &&  structure.hits < structure.hitsMax)  ;
                  }});
@@ -36,7 +36,7 @@ var towers = {
                         } else { console.log("tower waiting for more storage. Currently at: " + Game.rooms[roomname].memory.containerstoragepercent)}
                     }
                 }
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             if(closestHostile) {
                 tower.attack(closestHostile);
             }

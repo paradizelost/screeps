@@ -1,20 +1,23 @@
-var roleMiner = {
+let roleMiner = {
      run: function(creep) {
-        var sources = creep.room.find(FIND_SOURCES);
-        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sources[0]);
-        } 
+        if(creep.memory.originroom === undefined){
+            creep.memory.originroom = creep.room.name
+        }
+        if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
+           let mysource=Game.getObjectById(creep.memory.destsource.id)
+           if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
+                 creep.moveTo(mysource);
+            } 
      },
      spawn: function(roomname){
-        var myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        var myroom = Game.rooms[roomname]
-        for(var thisspawn in myspawns){
-            var spawn = myspawns[thisspawn]
-            var myrole='miner';
-            var myroles = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role == myrole);
+        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        let myroom = Game.rooms[roomname]
+        for(let spawn of myspawns){
+            let myrole='miner';
+            let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
             console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
             if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                var newName = spawn.createCreep([WORK,WORK,WORK,WORK,WORK,MOVE], undefined, {role: myrole});
+                let newName = spawn.createCreep([WORK,WORK,WORK,WORK,WORK,MOVE], undefined, {role: myrole});
                 console.log('Spawning new ' + myrole + ': ' + newName);
             }
         }
