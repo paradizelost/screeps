@@ -1,6 +1,5 @@
+ let buildparts=require('bodypartbuilder')
  let roleTowerrecharger = {
-
-    /** @param {Creep} creep **/
     run: function(creep) {
        if(creep.memory.originroom === undefined){
             creep.memory.originroom = creep.room.name
@@ -35,19 +34,6 @@
                 }
             } 
         }
- },
-    spawn: function(roomname){
-        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        let myroom = Game.rooms[roomname]
-        for(let spawn of myspawns){
-            let myrole='towerrecharger';
-             let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
-            console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
-            if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                let newName = spawn.createCreep([CARRY,CARRY,CARRY,MOVE,MOVE], undefined, {role: myrole});
-                console.log('Spawning new ' + myrole + ': ' + newName);
-            }
-        }
-     }
+    }
  };
  module.exports = roleTowerrecharger;

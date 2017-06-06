@@ -1,5 +1,4 @@
-let buildparts=require('bodypartbuilder')
-let roleMiner = {
+let roleMiner2 = {
      run: function(creep) {
         if(creep.memory.originroom === undefined){
             creep.memory.originroom = creep.room.name
@@ -11,4 +10,4 @@ let roleMiner = {
             } 
      }
 };
-module.exports = roleMiner;
+module.exports = roleMiner2;

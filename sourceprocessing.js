@@ -1,6 +1,9 @@
 let runSources = {
      tick: function(roomname) {
-        let sources = Game.rooms[roomname].find(FIND_DROPPED_ENERGY );
+        let sources = Game.rooms[roomname].find(
+            FIND_DROPPED_RESOURCES, {
+                filter: (mineral) => mineral.resourceType === RESOURCE_ENERGY
+            });
         for(let source of sources){
             try{
                 let allhaulers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role=='hauler' );

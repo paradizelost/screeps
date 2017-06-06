@@ -1,7 +1,7 @@
 let assignMiners = {
      tick: function(roomname) {
         let sources = Game.rooms[roomname].find(FIND_SOURCES );
-        for(var source of sources){
+        for(let source of sources){
                 let allminers = _.filter(Game.rooms[roomname].find(FIND_MY_CREEPS), (creep) => creep.memory.role=='miner' );
                 let unassignedminers = _.filter(allminers, (creep) => (creep.memory.destsource == undefined && creep.memory.role=='miner'));
                 let assignedminers = _.filter(allminers, (creep) => (creep.memory.destsource != undefined && creep.memory.role=='miner'));

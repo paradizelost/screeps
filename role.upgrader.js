@@ -1,3 +1,4 @@
+let buildparts=require('bodypartbuilder')
 let roleUpgrader = {
      run: function(creep) {
         if(creep.memory.originroom === undefined){
@@ -13,7 +14,7 @@ let roleUpgrader = {
 	        creep.say('upgrading');
 	    }
 	    if(creep.memory.upgrading) {
-	        if(creep.room.memory.containerstoragepercent>.6){
+	        if(creep.room.memory.containerstoragepercent>creep.room.memory.minupgradepct || !(creep.room.memory.containerstoragepercent) ){
     	        if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
 	                   creep.say('MTRC')
                        creep.moveTo(creep.room.controller);
@@ -25,33 +26,24 @@ let roleUpgrader = {
                  filter: (structure) => {
                     return ((structure.structureType == STRUCTURE_CONTAINER|| structure.structureType == STRUCTURE_STORAGE) &&  structure.store[RESOURCE_ENERGY] > 0)  ;
                  }});
-            if(container){
-                
-                 if(creep.withdraw(container,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say("MTSC");
-                     creep.moveTo(container);
-                }
-            }else{
-	            let droppedenergy = creep.room.find(FIND_DROPPED_ENERGY );
+                 let allcontainers = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                       return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE )  ;
+                   }});
+            if(allcontainers.length==0){
+                 let droppedenergy = creep.room.find(FIND_DROPPED_RESOURCES, {filter: {resourceType: RESOURCE_ENERGY}});
                 if(creep.pickup(droppedenergy[0]) == ERR_NOT_IN_RANGE) {
                     creep.say("MTDE");
                     creep.moveTo(droppedenergy[0]);
                 }
+            }else{
+	           
+                 if(creep.withdraw(container,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say("MTSC");
+                     creep.moveTo(container);
+                }
             }
 	    }
-     },
-     spawn: function(roomname){
-        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        let myroom = Game.rooms[roomname]
-        for(let spawn of myspawns){
-            let myrole='upgrader';
-             let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
-            console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
-            if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                let newName = spawn.createCreep([MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY], undefined, {role: myrole});
-                console.log('Spawning new ' + myrole + ': ' + newName);
-            }
-        }
      }
 };
 module.exports = roleUpgrader;

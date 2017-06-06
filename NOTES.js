@@ -1,3 +1,7 @@
+if(containers.count==0 && structure_extensions.count==0 && storage.count==0 && miners.count==0){spawn harvester} else { spawn miners and haulers}
+
+_.forEach(Game.creeps, creep => creep.suicide())
+_.forEach(Game.rooms[roomname].constructionSites, cs=>cs.remove())
 serializePos: function(pos) {
        return pos.x + '_' + pos.y + '_' + pos.roomName;
    },

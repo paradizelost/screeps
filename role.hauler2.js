@@ -1,6 +1,5 @@
+ let buildparts=require('bodypartbuilder')
  let roleHauler2 = {
-
-    /** @param {Creep} creep **/
     run: function(creep) {
        if(creep.memory.originroom === undefined){
             creep.memory.originroom = creep.room.name
@@ -28,7 +27,7 @@
         } else {
             let spawntarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
-                       return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&structure.energy < structure.energyCapacity)  
+                       return ((structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity)  
                    }
             });
             if(spawntarget != undefined) {
@@ -41,19 +40,6 @@
                 creep.moveTo(creep.room.memory.hauler2parkx,creep.room.memory.hauler2parky,creep.room.roomName)
             }
         }
- },
-     spawn: function(roomname){
-        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
-        let myroom = Game.rooms[roomname]
-        for(let spawn of myspawns){
-            let myrole='hauler2';
-             let myroles = _.filter(Game.creeps, (creep) => creep.memory.role == myrole && creep.memory.originroom == roomname);
-            console.log(myrole + 's: ' + myroles.length + ' Needed: ' + Game.rooms[roomname].memory['max'+myrole+'s']);
-            if(myroles.length < Game.rooms[roomname].memory['max'+myrole+'s']) { 
-                let newName = spawn.createCreep([CARRY,CARRY,CARRY,MOVE,MOVE], undefined, {role: myrole});
-                console.log('Spawning new ' + myrole + ': ' + newName);
-            }
-        }
-     }
+    }
  };
  module.exports = roleHauler2;
