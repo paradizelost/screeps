@@ -9,7 +9,7 @@ let rolenrBuilder = {
 	        creep.memory.building = true;
 	        creep.say('building');
 	    }
-	    if(Game.flags.nrbuild.room == creep.room){
+	    if(Game.flags.nrbuild.pos.isEqualTo(creep.pos) && creep.room == Game.flags.nrbuild.room){
 	    if(creep.memory.originroom === undefined){
             creep.memory.originroom = creep.room.name
             creep.memory.role = 'builder'

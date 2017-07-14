@@ -16,7 +16,7 @@ let roleBuilder = {
 	    if(creep.memory.building) {
 	        
 	        if(creep.memory.buildsite==undefined|| Game.getObjectById(creep.memory.buildsite.id) == undefined){
-	            creep.memory.buildsite = Game.rooms[creep.memory.originroom].find(FIND_CONSTRUCTION_SITES)[0];
+	            creep.memory.buildsite = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 	        }
 	        let target = Game.getObjectById(creep.memory.buildsite.id)
             if(target) {

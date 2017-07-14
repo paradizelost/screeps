@@ -46,6 +46,13 @@ module.exports = {
         let newmax = Game.rooms[roomname].memory[rolename]
         return 'Old Max:'+currentmax+' New Max:'+newmax
     },
+    setmax: function(role,roomname,count){
+        let rolename = 'max' + role + 's'
+        let currentmax = Game.rooms[roomname].memory[rolename]
+        Game.rooms[roomname].memory[rolename] = count
+        let newmax = Game.rooms[roomname].memory[rolename]
+        return 'Old Max:'+currentmax+' New Max:'+newmax
+    },
     increase: function(role,roomname){
         let rolename = 'max' + role + 's'
         let currentmax = Game.rooms[roomname].memory[rolename]

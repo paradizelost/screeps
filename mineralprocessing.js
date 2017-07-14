@@ -8,7 +8,9 @@ let assignMiner2s = {
                 let myminers = _.filter(allminers, (creep) => (creep.memory.destsource != undefined && creep.memory.destsource.id==source.id && creep.memory.role=='miner'));
                 let sourcecount = sources.length
                 let persrc = allminers.length / sourcecount
-                console.log('My Assigned miner2s: ' +myminers.length + ' Max per source:' + persrc + ' Total Miner2s:' + allminers.length + ' Total Sources:' + sourcecount + ' Unassigned Miners:' + unassignedminers.length)
+                if(global.verbosity>0){
+                    console.log('My Assigned miner2s: ' +myminers.length + ' Max per source:' + persrc + ' Total Miner2s:' + allminers.length + ' Total Sources:' + sourcecount + ' Unassigned Miners:' + unassignedminers.length)
+                }
                 if(unassignedminers.length > 0){
                     if(myminers.length >= persrc){
                         //break;

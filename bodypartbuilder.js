@@ -40,6 +40,8 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
+                            [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY],
+                            [MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY],
                             [MOVE,MOVE,WORK,WORK,CARRY,CARRY],
                             [MOVE,WORK,CARRY]
                         
@@ -236,16 +238,14 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
-                            [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY],
-                            [MOVE,MOVE,WORK,WORK,CARRY,CARRY],
-                            [MOVE,WORK,CARRY]
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL8
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL7
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL6
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL5
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL4
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL3
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY],//RCL2
+                            [MOVE,WORK,CARRY]//RCL1
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
                             if(ispossible==OK){

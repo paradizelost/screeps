@@ -1,9 +1,10 @@
 let assignMiners=require('sproc')
 let rolenrMiner = {
      run: function(creep) {
-        if(Game.flags.nrbuild.room == creep.room){
-            
-            if(creep.memory.destsource==undefined){
+         
+        if(Game.flags.nrbuild.pos.isEqualTo(creep.pos) && creep.room == Game.flags.nrbuild.room){
+            if(creep.memory.destsource===undefined){
+                console.log("changing role from nrminer to miner")
                 creep.memory.role='miner'
                 assignMiners(creep.roomName)
             }

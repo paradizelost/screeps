@@ -34,9 +34,15 @@ var towers = {
                 {
                     if(closestDamagedStructure) {
                         if(Game.rooms[roomname].memory.containerstoragepercent > .8){
+                            if(global.verbosity>0){
                             console.log("tower repairing. Currently at: " + Game.rooms[roomname].memory.containerstoragepercent)
+                            }
                         tower.repair(closestDamagedStructure);
-                        } else { console.log("tower waiting for more storage. Currently at: " + Game.rooms[roomname].memory.containerstoragepercent)}
+                        } else { 
+                            if(global.verbosity>0){
+                            console.log("tower waiting for more storage. Currently at: " + Game.rooms[roomname].memory.containerstoragepercent)
+                            }
+                            }
                     }
                 }
             

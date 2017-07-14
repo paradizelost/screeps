@@ -12,7 +12,9 @@ let runSources = {
                 let myhaulers = _.filter(allhaulers, (creep) => (creep.memory.destsource != undefined && creep.memory.destsource.id==source.id && creep.memory.role=='hauler'));
                 let sourcecount = sources.length
                 let persrc = allhaulers.length / sourcecount
-                console.log('My Assigned Haulers: ' +myhaulers.length + ' Max per source:' + persrc + ' Total Haulers:' + allhaulers.length + ' Total Sources:' + sourcecount + ' Unassigned Haulers:' + unassignedhaulers.length)
+                if(global.verbosity>0){
+                    console.log('My Assigned Haulers: ' +myhaulers.length + ' Max per source:' + persrc + ' Total Haulers:' + allhaulers.length + ' Total Sources:' + sourcecount + ' Unassigned Haulers:' + unassignedhaulers.length)
+                }
                 if(unassignedhaulers.length > 0){
                     if(myhaulers.length < persrc){
                         unassignedhaulers[0].memory.destsource = source
