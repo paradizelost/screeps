@@ -16,7 +16,7 @@ let Phase1 = {
                 }
                 if(Game.rooms[room].controller.ticksToDowngrade > CONTROLLER_DOWNGRADE[Game.rooms[room].controller.level]*.8){
                      Game.rooms[room].memory.NeedsRecharge=0
-                     console.log(Game.rooms[room].memory.NeedsRecharge)
+                     console.log(room + 'needs recharge: ' + Game.rooms[room].memory.NeedsRecharge)
                 }
                 if(Game.flags.debug && Game.flags.debug.room == Game.rooms[room]){
                     console.log(room)
