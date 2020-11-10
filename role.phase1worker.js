@@ -63,7 +63,6 @@ let Phase1Worker = {
                 if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
 	                   creep.say('MTRC')
                        if (road.length > 0) {creep.repair(road);}
-                       creep.memory.assignedroom=creep.room.name
                        creep.moveTo(Game.rooms[creep.memory.assignedroom].controller,{ignoreCreeps:ignorecreeps})
                 }
             }
