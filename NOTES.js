@@ -1,64 +1,62 @@
-if(containers.count==0 && structure_extensions.count==0 && storage.count==0 && miners.count==0){spawn harvester} else { spawn miners and haulers}
-require('role.' + creep.memory.role).run(creep)
-_.forEach(Game.creeps, creep => creep.suicide())
-_.forEach(Game.rooms[roomname].constructionSites, cs=>cs.remove())
-serializePos: function(pos) {
-       return pos.x + '_' + pos.y + '_' + pos.roomName;
-   },
-   deserializePos: function(str) {
-       var ar = str.split('_');
-       return new RoomPosition(ar[0], ar[1], ar[2]);
-   },
-   
-   
-   
-   Structure.prototype.getResourceCapacity = function(resourceType) {
-    switch (this.structureType) {
-        case STRUCTURE_CONTAINER:
-        case STRUCTURE_STORAGE:
-        case STRUCTURE_TERMINAL:    
-        return  this.storeCapacity;
-        case STRUCTURE_SPAWN:
-        case STRUCTURE_EXTENSION:
-        case STRUCTURE_LINK:
-        case STRUCTURE_TOWER:
-        if (RESOURCE_ENERGY == resourceType) {
-            return(this.energyCapacity);
-        } else {
-            return(-1);
+/*
+||Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length == 5
+
+{ignoreCreeps:true} on moveto, need to find how to check if stuck
+let pos = _.create(RoomPosition.prototype, creep.memory.pos)
+for(let road in look){if(road.structureType == STRUCTURE_ROAD){console.log('road at ' + creep.pos)}}
+
+let road = in_creep.pos.lookFor(LOOK_STRUCTURES)[0];
+if (road) {in_creep.repair(road);}
+x=Game.getObjectById("58dbc3ad8283ff5308a3df08"); console.log(`${x.progressTotal - x.progress} to go!`);
+
+
+
+--------- code to check for open source spots ----
+RoomPosition.prototype.isOpen = function(opts){
+// opts.ignoreCreeps (boolean) default false. ignores creeps if true.
+// opts.ignoreSolids (boolean) default false. ignores solid structures if true.
+    if ("wall" === Game.map.getTerrainAt(this)) return(false);
+    if (null==Game.rooms[this.roomName]) return (true);
+    if ((null==opts || !opts.ignoreCreeps) && 
+        (this.lookFor(LOOK_CREEPS).length !== 0)) return(false);
+    if (null==opts || !opts.ignoreSolids){
+        var objectList = this.lookFor(LOOK_STRUCTURES).concat(
+                         this.lookFor(LOOK_CONSTRUCTION_SITES));
+        for(let j=objectList.length; --j>=0; ){
+            let rObj = objectList[j];
+            if (rObj instanceof ConstructionSite && !rObj.my) continue;
+            if (rObj.structureType !== STRUCTURE_ROAD &&
+                rObj.structureType !== STRUCTURE_CONTAINER &&
+               (rObj.structureType !== STRUCTURE_RAMPART ||
+               !rObj.my)) {
+                    return false;
+            }
         }
-        case STRUCTURE_LAB:
-        if (RESOURCE_ENERGY == resourceType) {
-            return(this.energyCapacity);
-        } else {
-            return(this.mineralCapacity);
-        }
-        default:
-        return(-1);
     }
+    return(true);
 }
-Structure.prototype.getResource = function(resourceType) {
-    switch (this.structureType) {
-        case STRUCTURE_CONTAINER:
-        case STRUCTURE_STORAGE:
-        case STRUCTURE_TERMINAL:    
-        return this.store[resourceType];
-        case STRUCTURE_SPAWN:
-        case STRUCTURE_EXTENSION:
-        case STRUCTURE_LINK:
-        case STRUCTURE_TOWER:
-        if (RESOURCE_ENERGY == resourceType) {
-            return(this.energy);
-        } else {
-            return(-1);
+RoomPosition.prototype.nearOpenList = function(opts){
+// using .isOpen (above) this checks adjacent positions for openness. Room exits and 
+// other rooms are not considered. The position itself is also not considered.
+//
+// opts.ignoreCreeps (boolean) default false. ignores creeps if true.
+// opts.ignoreSolids (boolean) default false. ignores solid structures if true.
+// return               (list) list of open adjacent positions.
+    var x=this.x;
+    var y=this.y;
+    var openPosList=[];
+    var sList=[{x:x-1,y:y-1},{x:x, y:y-1},{x:x+1,y:y-1},
+               {x:x-1,y:y  },             {x:x+1,y:y  },
+               {x:x-1,y:y+1},{x:x, y:y+1},{x:x+1,y:y+1}];
+    for (var i=sList.length; --i>=0; ){
+        if (sList[i].x<49 && sList[i].x>0 && 
+            sList[i].y<49 && sList[i].y>0 && 
+            (global.myCache.getRoomPosition(
+             sList[i].x,sList[i].y,this.roomName)).isOpen(opts)){
+                openPosList.push(
+                 global.myCache.getRoomPosition(sList[i].x,sList[i].y,this.roomName));
         }
-        case STRUCTURE_LAB:
-        if (RESOURCE_ENERGY == resourceType) {
-            return(this.energy);
-        } else {
-            return(this.mineralAmount);
-        }
-        default:
-        return(-1);
     }
-}
+    return(openPosList);
+};
+--------- end open position code -----

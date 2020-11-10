@@ -1,11 +1,5 @@
 let buildparts = {
      tick: function(roomname,role) {
-         
-         console.log(Game.rooms[roomname].memory.tickssincespawn)
-         console.log(roomname + ":" + role)
-         let energyready = Game.rooms[roomname].energyAvailable
-         let energymax = Game.rooms[roomname].energyCapacityAvailable
-
              Game.rooms[roomname].memory.tickssincespawn=0
              let tobuild=[]
              let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
@@ -17,10 +11,10 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
-                            [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY],
-                            [MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY],
-                            [MOVE,MOVE,WORK,WORK,CARRY,CARRY],
-                            [MOVE,WORK,CARRY]
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY],
+                            [MOVE,WORK,CARRY,CARRY]
                         
                         ]){
                             let ispossible = spawn.canCreateCreep(totry)
@@ -40,9 +34,9 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
-                            [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY],
-                            [MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY],
-                            [MOVE,MOVE,WORK,WORK,CARRY,CARRY],
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY],
+                            [MOVE,WORK,CARRY,MOVE,WORK,CARRY],
                             [MOVE,WORK,CARRY]
                         
                         ]){
@@ -63,10 +57,12 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
-                            [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
-                            [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],
-                            [CARRY,CARRY,MOVE,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE]
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE],
                             [CARRY,MOVE]
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
@@ -181,10 +177,13 @@ let buildparts = {
                     
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
-                        for(let totry of [[CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
-                            [CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
-                            [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],
-                            [CARRY,CARRY,MOVE,MOVE],
+                        for(let totry of [
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE]
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE],
+                            [CARRY,CARRY,MOVE],
                             [CARRY,MOVE]
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
@@ -219,7 +218,9 @@ let buildparts = {
                     for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
-                            [MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY],//RCL3
+                            [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE]//RCL3
+                            [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE],
+                            [WORK,CARRY,MOVE,WORK,CARRY,MOVE],
                             [WORK,CARRY,MOVE]
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
