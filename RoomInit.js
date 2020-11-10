@@ -8,6 +8,7 @@ let initroom = {
         Game.rooms[name].memory.minrepairpct=.5
         Game.rooms[name].memory.hasbeeninited=1
         Game.rooms[name].memory.tickssofar=0
+        Game.rooms[name].memory.maphits={}
      }
 }
 module.exports = initroom

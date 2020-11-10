@@ -3,6 +3,7 @@ global.Empire = require("Empire")
 let Traveler = require("Traveler")
 global.verbosity=0
 module.exports.loop = function () {
+    let decrementcounter = Game.time % 30
     for(let name in Game.rooms){
         let myroom=Game.rooms[name]
         
@@ -20,26 +21,51 @@ module.exports.loop = function () {
             myroom.memory.tickssofar++
             require('Room.Phase' + myroom.memory.phase).run(name)
          }
-        }
-
+         
+         for(let pos in myroom.memory.maphits){
+             if((myroom.memory.maphits[pos].lastwalked < (Game.time - 1000)) && (myroom.memory.maphits[pos].hits>0)){
+                    if(decrementcounter== 0){
+                        myroom.memory.maphits[pos].hits--
+                    }
+             } else if(myroom.memory.maphits[pos].hits==0){
+                delete myroom.memory.maphits[pos]
+             }
+         }
+    }
     for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             if(global.verbosity>0){
-            console.log('Clearing non-existing creep memory:', name);
             }
         } else {
             try{
                 let creep = Game.creeps[name]
                 if(creep.spawning) return;
                 if(creep.fatigue>0){
-                    creep.say('fatigued')
-                    creep.room.createConstructionSite(creep.pos.x,creep.pos.y,STRUCTURE_ROAD)
+                    if(creep.room.memory.maphits==undefined){
+                        creep.room.memory.maphits={}
+                    }
+                    //creep.room.createConstructionSite(creep.pos.x,creep.pos.y,STRUCTURE_ROAD)
+                    if(creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y] ==undefined){
+                        creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y]={}
+                        creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y].lastwalked = Game.time
+                        creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y].hits=1
+                    } else {
+                        creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y].hits++
+                        if(creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y].hits > 5){
+                            if(creep.room.memory.phase>0){
+                                creep.room.createConstructionSite(creep.pos.x,creep.pos.y,STRUCTURE_ROAD)
+                            }
+                        }
+                    }
                 }
                 
                 require('role.' + creep.memory.role).run(creep)
                 //creep.say("TRYING")
-            }  catch (e) {}
+            }  catch (e) {
+                console.log("creep error")
+                console.log(e)
+            }
         }
     }
     let flags = Game.flags

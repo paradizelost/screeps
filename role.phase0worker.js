@@ -2,6 +2,7 @@
 let Phase0Worker = {
      run: function(creep) {
         let filllevel = _.sum(creep.carry)
+        //creep.say(creep.room.memory.maphits[creep.pos.x + '-' + creep.pos.y].hits)
         if(creep.memory.working && filllevel == 0) {
             creep.memory.working = false;
             creep.say('Gathering');

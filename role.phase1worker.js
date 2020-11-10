@@ -6,6 +6,9 @@ let Phase1Worker = {
             creep.memory.lastpos = creep.pos
             creep.memory.timeatpos = 0
         }
+        if(creep.memory.assignedroom==undefined){
+            creep.memory.assignedroom=creep.room.name
+        }
         let lastpos = _.create(RoomPosition.prototype, creep.memory.lastpos)
         if(creep.pos.isEqualTo(lastpos)){
             
@@ -59,8 +62,9 @@ let Phase1Worker = {
             }else {
                 if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
 	                   creep.say('MTRC')
-	                   if (road.length > 0) {creep.repair(road);}
-                       creep.moveTo(creep.room.controller,{ignoreCreeps:ignorecreeps})
+                       if (road.length > 0) {creep.repair(road);}
+                       creep.memory.assignedroom=creep.room.name
+                       creep.moveTo(Game.rooms[creep.memory.assignedroom].controller,{ignoreCreeps:ignorecreeps})
                 }
             }
         } else {
