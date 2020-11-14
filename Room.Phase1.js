@@ -25,15 +25,22 @@ let Phase1 = {
                     console.log(creepcounts[workerrolename])
                     console.log(Game.rooms[room].energyAvailable + " of " + Game.rooms[room].energyCapacityAvailable)
                 }
-                if((((creepcounts[workerrolename]< (sources.length * 3) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
-                    console.log('Spawning worker in '  + room)
-                    require('proc.spawning').spawnworker(room)
+                if(Game.rooms[room].minablepositions>=3){
+                    if((((creepcounts[workerrolename]< (sources.length * 3) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                        console.log('Spawning worker in '  + room)
+                        require('proc.spawning').spawnworker(room)
+                    }
+                } else {
+                    if((((creepcounts['sourceminer']< Game.rooms[room].memory.minablepositions) || creepcounts['sourceminer']==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) || ((creepcounts['sourceminer']==0 || creepcounts['sourceminer']==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                        console.log('Spawning sourceminer in '  + room)
+                        require('proc.spawning').spawnsourceminer(room)
+                    }
                 }
                 if((Game.rooms[room].storage || Game.rooms[room].terminal) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
                     console.log("Spawning Mover in " + room)
                     require('proc.spawning').spawnmover(room)
                 }
-                if(Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}) && (creepcounts["miner"] < 1 || creepcounts["miner"]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable){
+                if((Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}))&&(creepcounts["miner"] < 1 || creepcounts["miner"]==undefined)&&(Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable)){
                     console.log("Spawning Miner in "  + room)
                     require('proc.spawning').spawnminer(room)
                 }

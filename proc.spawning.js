@@ -23,6 +23,30 @@ let buildparts = {
                     }}
 
     },
+    spawnsourceminer: function(roomname) {
+        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        Game.rooms[roomname].memory.CreepNum++
+        let CreepName =  'sourceminer_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+                            for(let spawn of myspawns){
+                        if(!spawn.spawning){
+                        let tobuild=[]
+                        for(let totry of [
+                            [WORK,WORK,WORK,WORK,WORK,MOVE],
+                            [WORK,WORK,WORK,WORK,MOVE],
+                            [WORK,WORK,WORK,MOVE],
+                            [WORK,WORK,MOVE],
+                            [WORK,MOVE]
+                            ]){
+                            let ispossible = spawn.canCreateCreep(totry)
+                            if(ispossible==OK){
+                                tobuild=totry
+                                break;
+                            }
+                        }
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:'sourceminer'})
+                    }}
+
+    },
     spawnwarrior: function(roomname) {
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         Game.rooms[roomname].memory.CreepNum++
