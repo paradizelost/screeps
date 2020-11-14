@@ -2,15 +2,15 @@ let buildparts = {
      spawnminer: function(roomname) {
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         Game.rooms[roomname].memory.CreepNum++
-        let CreepName =  roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+        let CreepName =  'miner_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
                             for(let spawn of myspawns){
                         if(!spawn.spawning){
                         let tobuild=[]
                         for(let totry of [
-                            [WORK,WORK,WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,MOVE],
+                            [WORK,WORK,WORK,WORK,CARRY,MOVE],
+                            [WORK,WORK,WORK,CARRY,MOVE],
+                            [WORK,WORK,CARRY,MOVE],
+                            [WORK,CARRY,MOVE],
                             [WORK,MOVE]
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
@@ -26,7 +26,7 @@ let buildparts = {
     spawnwarrior: function(roomname) {
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         Game.rooms[roomname].memory.CreepNum++
-        let CreepName = roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+        let CreepName = 'warrior_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
                             for(let spawn of myspawns){
                         if(!spawn.spawning){
                         let tobuild=[]
@@ -50,7 +50,7 @@ let buildparts = {
      spawnworker: function(roomname) {
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         Game.rooms[roomname].memory.CreepNum++
-        let CreepName =  roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+        let CreepName =  'worker_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
                             for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [
@@ -77,7 +77,7 @@ let buildparts = {
     spawnmover: function(roomname) {
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
         Game.rooms[roomname].memory.CreepNum++
-        let CreepName =  roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+        let CreepName =  'Mover_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
                             for(let spawn of myspawns){
                         if(!spawn.spawning){
                         for(let totry of [

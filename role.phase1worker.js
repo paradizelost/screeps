@@ -28,7 +28,9 @@ let Phase1Worker = {
 	    if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.working = true;
 	        creep.say('working');
-	    }
+        }
+        
+        
         if(creep.memory.working){
             let look=creep.pos.lookFor(LOOK_STRUCTURES)
             let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
@@ -38,7 +40,7 @@ let Phase1Worker = {
 	                   creep.say(creep.room.controller.ticksToDowngrade)
                        creep.moveTo(creep.room.controller)
                 }
-             } else if(creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].includes(s.structureType)) && s.energy < s.energyCapacity))}})){
+             } else if((creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].includes(s.structureType)) && s.energy < s.energyCapacity))}}))&& (creep.room.memory.movercount<1||creep.room.memory.movercount==undefined)){
                 let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return (((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) && s.energy < s.energyCapacity))}});
                 if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawntarget,{ignoreCreeps:ignorecreeps})
@@ -68,21 +70,30 @@ let Phase1Worker = {
             }
         } else {
             let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
-            if(droppedenergy == undefined){
+            let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
+            //console.log(tombstones)
+            if((droppedenergy == undefined) && (tombstone==undefined)){
                 if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
                 let mysource=Game.getObjectById(creep.memory.destsource.id)
                 if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
                     creep.moveTo(mysource,{ignoreCreeps:ignorecreeps})
                 }
             } else {
-                if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {
-                    if(global.verbosity>0){
-                        creep.say("MTDE");
+                if(droppedenergy){
+                    if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {
+                        if(global.verbosity>0){
+                            creep.say("MTDE");
+                        }
+                        creep.moveTo(droppedenergy,{ignoreCreeps:ignorecreeps})           
                     }
-                    
-                    creep.moveTo(droppedenergy,{ignoreCreeps:ignorecreeps})
-                                
-                }   
+                } else {
+                    if(creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        if(global.verbosity>0){
+                            creep.say("MTTS");
+                        }
+                        creep.moveTo(tombstone.pos,{ignoreCreeps:ignorecreeps})           
+                    }
+                }
             }
         }
         creep.memory.lastpos=creep.pos

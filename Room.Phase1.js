@@ -8,6 +8,7 @@ let Phase1 = {
                 let myspawn = myspawns[0]
                 let creepcount = Game.rooms[room].find(FIND_MY_CREEPS).length
                 creepcounts = _.countBy(Game.rooms[room].find(FIND_MY_CREEPS), c => c.memory.role)
+                Game.rooms[room].memory.movercount=creepcounts["mover"]
                 let workerrolename = 'phase' + Game.rooms[room].memory.phase +'worker'
                 let sources = Game.rooms[room].find(FIND_SOURCES )
                 if(Game.rooms[room].controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[Game.rooms[room].controller.level] * .2 ){
@@ -24,13 +25,17 @@ let Phase1 = {
                     console.log(creepcounts[workerrolename])
                     console.log(Game.rooms[room].energyAvailable + " of " + Game.rooms[room].energyCapacityAvailable)
                 }
-                
                 if((((creepcounts[workerrolename]< (sources.length * 3) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                    console.log('Spawning worker in '  + room)
                     require('proc.spawning').spawnworker(room)
                 }
-                if(Game.rooms[room].storage && Game.rooms[room].terminal && (creepcounts["mover"] < 1 || creepcounts["mover"]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable){
-                    console.log("Spawning Mover")
+                if((Game.rooms[room].storage || Game.rooms[room].terminal) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
+                    console.log("Spawning Mover in " + room)
                     require('proc.spawning').spawnmover(room)
+                }
+                if(Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}) && (creepcounts["miner"] < 1 || creepcounts["miner"]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable){
+                    console.log("Spawning Miner in "  + room)
+                    require('proc.spawning').spawnminer(room)
                 }
                 //require('proc.market').sellEnergy(room)
             }
