@@ -82,6 +82,31 @@ module.exports = {
     },
     sellEnergy: function(roomname){
         let myorders = Game.market.getAllOrders(order=>order.resourceType == RESOURCE_ENERGY && order.type == ORDER_SELL)
-        
+    },
+    computeSourceAccess: function(){
+        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+            let name = myroom.name
+            let minablepositions = 0
+            let srcs = Game.rooms[name].find(FIND_SOURCES);
+            for(let i = 0;i<srcs.length;i++)
+            {
+                minablepositions = minablepositions + this.computeSourceAccessPoints(Game.rooms[name],srcs[i])
+                //minablepositions = minablepositions + this.checkminablepositions(srcs[i])
+            }
+            Game.rooms[name].memory.minablepositions = minablepositions
+        }
+    },
+    computeSourceAccessPoints: function(room, source){
+        const roomTerrain = room.getTerrain();
+        var accessPoints = 0;
+        for(var x = -1;x<=1;x++)
+        {
+            for(var y = -1;y<=1;y++)
+            {
+                if(x==0 && y==0){continue;}
+                if(roomTerrain.get(source.pos.x+x,source.pos.y+y)!=1){accessPoints++;}
+            }
+        }
+        return accessPoints;
     }
 };

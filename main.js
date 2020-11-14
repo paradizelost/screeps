@@ -63,7 +63,7 @@ module.exports.loop = function () {
                 require('role.' + creep.memory.role).run(creep)
                 //creep.say("TRYING")
             }  catch (e) {
-                console.log("creep error")
+                console.log("creep error " + Game.creeps[name])
                 console.log(e)
             }
         }
