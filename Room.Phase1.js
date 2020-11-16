@@ -13,11 +13,10 @@ let Phase1 = {
                 let sources = Game.rooms[room].find(FIND_SOURCES )
                 if(Game.rooms[room].controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[Game.rooms[room].controller.level] * .2 ){
                     Game.rooms[room].memory.NeedsRecharge=1
-                    console.log(Game.rooms[room].memory.NeedsRecharge)
+                    console.log(room + " needs Recharge " + Game.rooms[room].memory.NeedsRecharge)
                 }
                 if(Game.rooms[room].controller.ticksToDowngrade > CONTROLLER_DOWNGRADE[Game.rooms[room].controller.level]*.8){
                      Game.rooms[room].memory.NeedsRecharge=0
-                     console.log(room + 'needs recharge: ' + Game.rooms[room].memory.NeedsRecharge)
                 }
                 if(Game.flags.debug && Game.flags.debug.room == Game.rooms[room]){
                     console.log(room)
@@ -25,8 +24,8 @@ let Phase1 = {
                     console.log(creepcounts[workerrolename])
                     console.log(Game.rooms[room].energyAvailable + " of " + Game.rooms[room].energyCapacityAvailable)
                 }
-                if(Game.rooms[room].minablepositions>=3){
-                    if((((creepcounts[workerrolename]< (sources.length * 3) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                if(Game.rooms[room].memory.minablepositions >= 3 ||Game.rooms[room].memory.minablepositions==undefined ){
+                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
                         console.log('Spawning worker in '  + room)
                         require('proc.spawning').spawnworker(room)
                     }
@@ -34,6 +33,10 @@ let Phase1 = {
                     if((((creepcounts['sourceminer']< Game.rooms[room].memory.minablepositions) || creepcounts['sourceminer']==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) || ((creepcounts['sourceminer']==0 || creepcounts['sourceminer']==undefined ) && Game.rooms[room].energyAvailable>100)) {
                         console.log('Spawning sourceminer in '  + room)
                         require('proc.spawning').spawnsourceminer(room)
+                    }
+                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                        console.log('Spawning worker in '  + room)
+                        require('proc.spawning').spawnworker(room)
                     }
                 }
                 if((Game.rooms[room].storage || Game.rooms[room].terminal) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
