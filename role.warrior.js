@@ -1,8 +1,8 @@
 let rolewarrior = {
      run: function(creep) {
-                    var hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    var hostilebuilding = creep.pos.findClosestByRange(FIND_HOSTILE_SPAWNS );
-                    if(hostile!=undefined) {
+        var hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        var hostilebuilding = creep.pos.findClosestByRange(FIND_HOSTILE_SPAWNS );
+        if(hostile!=undefined) {
             creep.say('Sorry')
             creep.travelTo(hostile,{ignoreCreeps:true});
             creep.attack(hostile);

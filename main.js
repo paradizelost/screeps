@@ -68,15 +68,17 @@ module.exports.loop = function () {
                 console.log(e)
             }
         }
+        //console.log('done running creeps')
     }
     let flags = Game.flags
     for(let flag in flags){
+        //console.log('running flags')
         require('flag.' + flag ).run()
     }
     for(let name in Memory.rooms) {
+       // console.log('cleaning up old rooms')
         let myroom = Game.rooms[name]
         if(!Game.rooms[name]){delete Memory.rooms[name]}
     }
     console.log("----End loop for "+ Game.time +'----')
-    }
-    
+}
