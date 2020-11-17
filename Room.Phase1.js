@@ -25,7 +25,7 @@ let Phase1 = {
                     console.log(Game.rooms[room].energyAvailable + " of " + Game.rooms[room].energyCapacityAvailable)
                 }
                 if(Game.rooms[room].memory.minablepositions >= 3 ||Game.rooms[room].memory.minablepositions==undefined ){
-                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions + 1) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
                         console.log('Spawning worker in '  + room)
                         require('proc.spawning').spawnworker(room)
                     }
@@ -43,9 +43,11 @@ let Phase1 = {
                     console.log("Spawning Mover in " + room)
                     require('proc.spawning').spawnmover(room)
                 }
-                if((Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}))&&(creepcounts["miner"] < 1 || creepcounts["miner"]==undefined)&&(Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable)){
-                    console.log("Spawning Miner in "  + room)
-                    require('proc.spawning').spawnminer(room)
+                if((Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}).length > 0)&&(creepcounts["miner"] < 1 || creepcounts["miner"]==undefined)&&(Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable)){
+                    if(Game.rooms[room].find(FIND_MINERALS)[0].ticksToRegeneration < 1000){
+                        console.log("Spawning Miner in "  + room)
+                        require('proc.spawning').spawnminer(room)
+                    } else { if(Game.flags.debug && Game.flags.debug.room == Game.rooms[room]){console.log("Not spawning miner in " + room + ", waiting for regen")}}
                 }
                 //require('proc.market').sellEnergy(room)
             }

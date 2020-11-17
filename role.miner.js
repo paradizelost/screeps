@@ -16,8 +16,23 @@ let roleMiner = {
          if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
             creep.travelTo(mysource);
          }
-      } else {
-         let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
+      }  else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
+         if(creep.memory.renewto == undefined){
+             creep.memory.renewto = 1200
+         } else {
+             if(creep.ticksToLive >= creep.memory.renewto){
+                 delete creep.memory.renewto
+             }
+         }
+         //console.log(creep.name + ": " + creep.ticksToLive + " " + creep.memory.renewto)
+         creep.say('renewing')
+         let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+         if(spawn.renewCreep(creep) == ERR_NOT_IN_RANGE)
+         {
+             creep.moveTo(spawn);
+         }
+     } else {
+         let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL || s.structureType == STRUCTURE_FACTORY ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
          if(storagetargets){
             if(this.transferAll(creep,storagetargets) == ERR_NOT_IN_RANGE) {
                creep.moveTo(storagetargets,{ignoreCreeps:ignorecreeps})

@@ -3,6 +3,7 @@ global.Empire = require("Empire")
 let Traveler = require("Traveler")
 global.verbosity=0
 module.exports.loop = function () {
+    console.log("----Start loop for "+ Game.time + '----')
     let decrementcounter = Game.time % 30
     for(let name in Game.rooms){
         let myroom=Game.rooms[name]
@@ -76,5 +77,6 @@ module.exports.loop = function () {
         let myroom = Game.rooms[name]
         if(!Game.rooms[name]){delete Memory.rooms[name]}
     }
-        
+    console.log("----End loop for "+ Game.time +'----')
     }
+    

@@ -19,7 +19,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:'miner'})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time, role:'miner'})
                     }}
 
     },
@@ -43,7 +43,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:'sourceminer'})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:'sourceminer'})
                     }}
 
     },
@@ -67,7 +67,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:'warrior'})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:'warrior'})
                     }}
 
     },
@@ -94,7 +94,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:"phase" + Game.rooms[roomname].memory.phase +"worker"})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"phase" + Game.rooms[roomname].memory.phase +"worker"})
                     }}
 
     },
@@ -121,7 +121,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:"mover"})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"mover"})
                     }}
 
     },
@@ -149,7 +149,7 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:"nrworker"})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"nrworker"})
                     }}
 
     },
@@ -171,7 +171,7 @@ let buildparts = {
                             }
                         }
                         console.log(roomname + ' ' + tobuild)
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{role:'claimer'})
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:'claimer'})
                     }}
 
     }

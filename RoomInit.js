@@ -17,6 +17,7 @@ let initroom = {
             minablepositions = minablepositions + this.computeSourceAccessPoints(Game.rooms[name],srcs[i])
             //minablepositions = minablepositions + this.checkminablepositions(srcs[i])
         }
+        //todo - create array of minable positions in the room and assign a screep to them, rather than having them constantly try to find the nearest one.
         Game.rooms[name].memory.minablepositions = minablepositions
      },
      computeSourceAccessPoints: function(room, source){

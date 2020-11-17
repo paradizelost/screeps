@@ -27,8 +27,8 @@ let mover={
 	    }
         if(creep.memory.working){
             let terminaltarget = creep.room.terminal
-            if(creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].includes(s.structureType)) && s.energy < s.energyCapacity))}})){
-                let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return (((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) && s.energy < s.energyCapacity))}});
+            if(creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_LAB].includes(s.structureType)) && s.energy < s.energyCapacity))}})){
+                let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return (((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER|| s.structureType == STRUCTURE_LAB) && s.energy < s.energyCapacity))}});
                 if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawntarget,{ignoreCreeps:ignorecreeps})
                 }
@@ -36,9 +36,24 @@ let mover={
                 creep.say('Putting Energy')
                 creep.travelTo(terminaltarget);
             }
+        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
+            if(creep.memory.renewto == undefined){
+                creep.memory.renewto = 1200
+            } else {
+                if(creep.ticksToLive >= creep.memory.renewto){
+                    delete creep.memory.renewto
+                }
+            }
+            //console.log(creep.name + ": " + creep.ticksToLive + " " + creep.memory.renewto)
+            creep.say('renewing')
+            let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+            if(spawn.renewCreep(creep) == ERR_NOT_IN_RANGE)
+            {
+                creep.moveTo(spawn);
+            }
         } else {
             if(filllevel < creep.carryCapacity){
-                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER ) &&  _.sum(s.store) >= 500)  ;}});
+                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  _.sum(s.store) >= 500)  ;}});
                 if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
                            creep.say('Getting Energy')
                            creep.travelTo(storagetarget);

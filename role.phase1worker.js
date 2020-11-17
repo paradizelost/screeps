@@ -68,6 +68,22 @@ let Phase1Worker = {
                        creep.moveTo(Game.rooms[creep.memory.assignedroom].controller,{ignoreCreeps:ignorecreeps})
                 }
             }
+        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
+            
+            if(creep.memory.renewto == undefined){
+                creep.memory.renewto = 1200
+            } else {
+                if(creep.ticksToLive >= creep.memory.renewto){
+                    delete creep.memory.renewto
+                }
+            }
+            creep.say('renewing')
+            console.log(creep.name + ": " + creep.ticksToLive + " " + creep.memory.renewto)
+            let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+            if(spawn.renewCreep(creep) == ERR_NOT_IN_RANGE)
+            {
+                creep.moveTo(spawn);
+            }
         } else {
             let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
             let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
