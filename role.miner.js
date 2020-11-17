@@ -16,6 +16,7 @@ let roleMiner = {
          if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
             creep.travelTo(mysource);
          }
+<<<<<<< HEAD
       }  else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
          if(creep.memory.renewto == undefined){
              creep.memory.renewto = 1200
@@ -32,6 +33,9 @@ let roleMiner = {
              creep.moveTo(spawn);
          }
      } else {
+=======
+      } else {
+>>>>>>> 1ff4251f0330951b8788d86218fc0b5a1906d5f4
          let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL || s.structureType == STRUCTURE_FACTORY ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
          if(storagetargets){
             if(this.transferAll(creep,storagetargets) == ERR_NOT_IN_RANGE) {
