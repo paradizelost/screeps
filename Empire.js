@@ -96,6 +96,20 @@ module.exports = {
             Game.rooms[name].memory.minablepositions = minablepositions
         }
     },
+    computeMineralAccess: function(){
+        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+            let name = myroom.name
+            let mineralminablepositions = 0
+            let minerals = Game.rooms[name].find(FIND_MINERALS);
+            for(let i = 0;i<minerals.length;i++)
+                {
+                    mineralminablepositions = mineralminablepositions + this.computeSourceAccessPoints(Game.rooms[name],minerals[i])
+                    //minablepositions = minablepositions + this.checkminablepositions(srcs[i])
+                }
+            //todo - create array of minable positions in the room and assign a screep to them, rather than having them constantly try to find the nearest one.
+            Game.rooms[name].memory.mineralminablepositions = mineralminablepositions
+        }
+    },
     computeSourceAccessPoints: function(room, source){
         const roomTerrain = room.getTerrain();
         var accessPoints = 0;
