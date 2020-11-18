@@ -5,6 +5,7 @@ global.verbosity=0
 module.exports.loop = function () {
     console.log("----Start loop for "+ Game.time + '----')
     let decrementcounter = Game.time % 30
+    try{
     for(let name in Game.rooms){
         let myroom=Game.rooms[name]
         
@@ -32,15 +33,16 @@ module.exports.loop = function () {
                 delete myroom.memory.maphits[pos]
              }
          }
-    }
+    }} catch(e) {console.log("Error processing rooms: "+ e + " " + e.stack)}
+    try{
     for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             if(global.verbosity>0){
             }
         } else {
+            let creep = Game.creeps[name]
             try{
-                let creep = Game.creeps[name]
                 if(creep.spawning) return;
                 if(creep.fatigue>0){
                     if(creep.room.memory.maphits==undefined){
@@ -64,17 +66,20 @@ module.exports.loop = function () {
                 require('role.' + creep.memory.role).run(creep)
                 //creep.say("TRYING")
             }  catch (e) {
-                console.log("creep error " + Game.creeps[name])
+                creep.say('🦄')
+                console.log("creep error " + creep.name)
                 console.log(e)
+                console.log(e.stack)
             }
         }
         //console.log('done running creeps')
-    }
+    }} catch(e) {console.log("Error processing creeps: "+ e.stack)}
+    try{
     let flags = Game.flags
     for(let flag in flags){
         //console.log('running flags')
         require('flag.' + flag ).run()
-    }
+    }} catch(e) {console.log("Error processing flags: "+ e.stack)}
     for(let name in Memory.rooms) {
        // console.log('cleaning up old rooms')
         let myroom = Game.rooms[name]
