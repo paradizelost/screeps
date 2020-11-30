@@ -302,6 +302,35 @@ let buildparts = {
              }
          
 
-     }
+     },
+     designCreep: function(availableCost,arrParts)
+    { 
+        var bodyPartArray = [];
+        var arrCosts = [];
+        for(var i = 0;i<arrParts.length;i++)
+        {
+            arrCosts.push(BODYPART_COST[arrParts[i]]);
+        }
+        var partCounter = 0;
+        var currentCost = 0;
+        while(true)
+        {
+            var nextPartType = partCounter%arrParts.length;
+            partCounter++;
+            if(currentCost+arrCosts[nextPartType] <= availableCost && partCounter<=50)
+            {
+                bodyPartArray.push(arrParts[nextPartType]);currentCost+=arrCosts[nextPartType];
+            }
+            else
+            {
+                if(bodyPartArray.length<arrParts.length)
+                {
+                    console.log("Insufficient funds for functional creep");
+                    return [];
+                }
+                return bodyPartArray;
+            }
+        }
+    },
 };
 module.exports = buildparts;

@@ -34,7 +34,7 @@ let Phase1 = {
                         console.log('Spawning sourceminer in '  + room)
                         require('proc.spawning').spawnsourceminer(room)
                     }
-                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
+                    if((((creepcounts[workerrolename]< (Game.rooms[room].memory.minablepositions+1) || creepcounts[workerrolename]==undefined)  && Game.rooms[room].energyAvailable >= Game.rooms[room].energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && Game.rooms[room].energyAvailable>100)) {
                         console.log('Spawning worker in '  + room)
                         require('proc.spawning').spawnworker(room)
                     }

@@ -54,13 +54,33 @@ let mover={
         } else {
             if(filllevel < creep.carryCapacity){
                 let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  _.sum(s.store) >= 500)  ;}});
-                if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
-                           creep.say('Getting Energy')
-                           creep.travelTo(storagetarget);
-                } 
+                let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
+                let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
+                if((droppedenergy == undefined) && (tombstone==undefined)){
+                    if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
+                        creep.say('Getting Energy')
+                        creep.travelTo(storagetarget);
+                    }
+                } else {
+                    if(droppedenergy){
+                        if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {
+                            if(global.verbosity>0){
+                                creep.say("MTDE");
+                            }
+                            creep.moveTo(droppedenergy,{ignoreCreeps:ignorecreeps})           
+                        }
+                    } else {
+                        if(creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            if(global.verbosity>0){
+                                creep.say("MTTS");
+                            }
+                            creep.moveTo(tombstone.pos,{ignoreCreeps:ignorecreeps})           
+                        }
+                    }
+                }
             }
         }
         creep.memory.lastpos=creep.pos
-}
+    }
 }
 module.exports = mover;
