@@ -21,7 +21,7 @@ let claim = {
         if(!Game.flags.claim.room.controller.my){
             //console.log('not my controller')
         }
-        console.log("CreepCount:"+creepcount+"| Lifetime:" + avglife + "|Request Time:" + Game.flags.claim.memory.requesttime )
+        console.log("Room: " + Game.flags.claim.room  + "CreepCount:"+creepcount+"| Lifetime:" + avglife + "|Request Time:" + Game.flags.claim.memory.requesttime )
      }
      
      }

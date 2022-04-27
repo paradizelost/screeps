@@ -36,7 +36,7 @@ let mover={
                 creep.say('Putting Energy')
                 creep.travelTo(terminaltarget);
             }
-        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
+        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}}))  ) {
             if(creep.memory.renewto == undefined){
                 creep.memory.renewto = 1200
             } else {
@@ -53,8 +53,8 @@ let mover={
             }
         } else {
             if(filllevel < creep.carryCapacity){
-                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  _.sum(s.store) >= 500)  ;}});
-                let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
+                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  _.sum(s.store) >= 10)  ;}});
+                let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
                 if((droppedenergy == undefined) && (tombstone==undefined)){
                     if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
@@ -77,6 +77,9 @@ let mover={
                             creep.moveTo(tombstone.pos,{ignoreCreeps:ignorecreeps})           
                         }
                     }
+                }
+                if(!storagetarget && (creep.carry > 0)){
+                    creep.memory.working=true
                 }
             }
         }

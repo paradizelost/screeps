@@ -36,8 +36,7 @@ let Phase1Worker = {
             let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
              if(creep.room.memory.NeedsRecharge==1){
                  if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-	                   creep.say('!MTRC!')
-	                   creep.say(creep.room.controller.ticksToDowngrade)
+	                   creep.say(creep.room.controller.ticksToDowngrade + " of " +  CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2)
                        creep.moveTo(creep.room.controller)
                 }
              } else if((creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].includes(s.structureType)) && s.energy < s.energyCapacity))}}))&& (creep.room.memory.movercount<1||creep.room.memory.movercount==undefined)){
@@ -68,7 +67,7 @@ let Phase1Worker = {
                        creep.moveTo(Game.rooms[creep.memory.assignedroom].controller,{ignoreCreeps:ignorecreeps})
                 }
             }
-        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>1)}}))  ) {
+        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}}))  ) {
             if(creep.memory.renewto == undefined){
                 creep.memory.renewto = 1200
             } else {
@@ -81,8 +80,7 @@ let Phase1Worker = {
             let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
             if(creep.room.memory.NeedsRecharge==1 && creep.carry.energy>0){
                 if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                      creep.say('!MTRC!')
-                      creep.say(creep.room.controller.ticksToDowngrade)
+                      creep.say(creep.room.controller.ticksToDowngrade + " of " +  (CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2))
                       creep.moveTo(creep.room.controller)
                }
             } else {
