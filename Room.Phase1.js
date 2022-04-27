@@ -50,9 +50,14 @@ let Phase1 = {
                     } else { if(Game.flags.debug && Game.flags.debug.room == Game.rooms[room]){console.log("Not spawning miner in " + room + ", waiting for regen")}}
                 }
                 if(Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TERMINAL}}).length > 0){
-                    if(Game.rooms[room].terminal.storage[RESOURCE_ENERGY] > 200000){
-                        console.log("")
-                        require('proc.market').sellEnergy(room)  
+                    console.log("starting market check for room " + Game.rooms[room])
+                    try{
+                        let availtosell = Game.rooms[room].terminal.storage[RESOURCE_ENERGY] - 200000
+                        if(availtosell > 1000){
+                            require('proc.market').sellEnergy(room)  
+                        }
+                    }catch{
+                        console.log("Failed to get energy for terminal in room " + Game.rooms[room])
                     }
                 }
                 //require('proc.market').sellEnergy(room)
