@@ -9,7 +9,7 @@
 let gomarket={
     sellEnergy: function(myroom) {
         try{
-        let availtosell= Game.rooms[myroom].terminal.store[RESOURCE_ENERGY]
+        let availtosell= Game.rooms[myroom].terminal.storage[RESOURCE_ENERGY]
         
         if(availtosell>200000){
             console.log(myroom + ":" + availtosell)
@@ -18,7 +18,7 @@ let gomarket={
                 let myorders = Game.market.getAllOrders(order=>order.resourceType == RESOURCE_ENERGY && order.type == ORDER_BUY)
                 //console.log(myorders.length)
                 for(let i=0; i<myorders.length; i++){
-                     let recheckavailtosell= Game.rooms[myroom].terminal.store[RESOURCE_ENERGY]
+                     let recheckavailtosell= Game.rooms[myroom].terminal.storage[RESOURCE_ENERGY]
                      if(recheckavailtosell<1000){
                          console.log("too little to mess with")
                      } else {
