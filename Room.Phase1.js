@@ -49,6 +49,9 @@ let Phase1 = {
                         require('proc.spawning').spawnminer(room)
                     } else { if(Game.flags.debug && Game.flags.debug.room == Game.rooms[room]){console.log("Not spawning miner in " + room + ", waiting for regen")}}
                 }
+                if((game.rooms[room].terminal.store[RESOURCE_ENERGY] > 200000 )){
+                    require('proc.market').sellEnergy(room)  
+                }
                 //require('proc.market').sellEnergy(room)
             }
         }

@@ -11,7 +11,7 @@ let gomarket={
         try{
         let availtosell= Game.rooms[myroom].terminal.store[RESOURCE_ENERGY]
         
-        if(availtosell>5000){
+        if(availtosell>200000){
             console.log(myroom + ":" + availtosell)
             //console.log(JSON.stringify(Game.market.orders))
           // if(Game.market.orders.length > 9){
