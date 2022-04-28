@@ -1,5 +1,6 @@
 let mover={
     run: function(creep) {
+        //creep.say("Moving Minerals")
         let ignorecreeps=true
         if(creep.memory.lastpos==undefined || creep.memory.timeatpos==undefined){
             creep.memory.lastpos = creep.pos
@@ -26,18 +27,14 @@ let mover={
 	        creep.say('working');
 	    }
         if(creep.memory.working){
-            //let terminaltarget = creep.room.terminal
-            let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_LAB].includes(s.structureType)) && s.energy < s.energyCapacity))}})
-            if(spawntarget){
-                if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawntarget,{ignoreCreeps:ignorecreeps})
+            let terminaltarget = creep.room.terminal
+            if(creep.room.terminal){
+                if(terminaltarget.store.getUsedCapacity()<200000){
+                    if(this.transferAll(creep,terminaltarget) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminaltarget,{ignoreCreeps:ignorecreeps})
+                    } 
                 }
-            }/*else if(terminaltarget != creep.memory.pulledenergyfrom){
-                 if(creep.transfer(terminaltarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE ) {
-                    creep.say('Putting Energy')
-                    creep.travelTo(terminaltarget);
-                 }
-            }*/
+            }
         } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}}))  ) {
             if(creep.memory.renewto == undefined){
                 creep.memory.renewto = 1200
@@ -83,14 +80,11 @@ let mover={
                         storagetarget=storage
                     }
                 }*/
-                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
-                if(storagetarget===undefined){
-                    storagetarget==creep.room.terminal
-                }
+                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER ) &&  (s.store.getUsedCapacity() > s.store.getUsedCapacity('energy') || s.store.getUsedCapacity('energy') > 200000))  ;}});
                 let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
                 if((droppedenergy == undefined) && (tombstone==undefined)){
-                    /*try{
+                    try{
                 //        console.log(storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity())
                         if(storagetarget.store.getUsedCapacity('energy')< 1000 && (storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity() < .5 )){
                                 //console.log("too much crap")
@@ -98,36 +92,41 @@ let mover={
                                 //creep.travelTo(storagetarget);
                         }
                     } catch(e) {
-                        console.log("oops" + e)
-                    }*/
-                    if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
-                        creep.say('Getting Energy')
-                        creep.travelTo(storagetarget);
+                        //console.log("oops" + e)
                     }
-                    creep.memory.pulledenergyfrom=storagetarget
-                } else {
-                    if(droppedenergy){
-                        if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {
-                            if(global.verbosity>0){
-                                creep.say("MTDE");
+                    try{
+                        for(mat in storagetarget.store){
+                            if(mat=='energy' && storagetarget.store.getUsedCapacity('energy') > 200000){
+                                if(creep.withdraw(storagetarget,mat)== ERR_NOT_IN_RANGE) {
+                                    creep.say('Getting ' + mat )
+                                    creep.travelTo(storagetarget);
+                                }
+                            } else {
+                                if(creep.withdraw(storagetarget,mat)== ERR_NOT_IN_RANGE) {
+                                    creep.say('Getting ' + mat )
+                                    creep.travelTo(storagetarget);
+                                }
                             }
-                            creep.moveTo(droppedenergy,{ignoreCreeps:ignorecreeps})           
                         }
-                    } else {
-                        if(creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            if(global.verbosity>0){
-                                creep.say("MTTS");
-                            }
-                            creep.moveTo(tombstone.pos,{ignoreCreeps:ignorecreeps})           
-                        }
+                    } catch (e){
+                        //console.log(e)
                     }
-                }
+                } 
                 if(!storagetarget && (creep.carry > 0)){
                     creep.memory.working=true
                 }
             }
         }
         creep.memory.lastpos=creep.pos
-    }
+    },
+    transferAll: function(creep,targetStorage){
+        let result = 0;
+        for(mat in creep.store)
+        {
+           let tempResult = creep.transfer(targetStorage,mat);
+           if(tempResult !== ERR_INVALID_ARGS) {result = tempResult;}
+        }
+        return result;
+     }
 }
 module.exports = mover;

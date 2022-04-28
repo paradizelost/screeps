@@ -125,6 +125,33 @@ let buildparts = {
                     }}
 
     },
+    spawnmineralmover: function(roomname) {
+        let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)
+        Game.rooms[roomname].memory.CreepNum++
+        let CreepName =  'MineralMover_' + roomname + "_" + (Game.rooms[roomname].memory.CreepNum)
+                            for(let spawn of myspawns){
+                        if(!spawn.spawning){
+                        for(let totry of [
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY],//MOVE*6,WORK*5,CARRY*7
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY],// all * 5
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY],//move*5, work*4, carry*5
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY],//move*4,work*4,carry*4
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY],//move*4, work*3, carry*4
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY], //move*3,work*2, carry*3
+                             [MOVE,CARRY,CARRY,MOVE,CARRY,CARRY], //move*2, work*2, carry*2
+                             [MOVE,CARRY,CARRY,MOVE,CARRY],//move*2, work*1, carry*2
+                             [MOVE,CARRY,CARRY]
+                            ]){
+                            let ispossible = spawn.canCreateCreep(totry)
+                            if(ispossible==OK){
+                                tobuild=totry
+                                break;
+                            }
+                        }
+                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"mineralmover"})
+                    }}
+
+    },
     spawnnrworker: function(roomname) {
         console.log('1')
         let myspawns=Game.rooms[roomname].find(FIND_MY_SPAWNS)

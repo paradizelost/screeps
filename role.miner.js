@@ -32,7 +32,7 @@ let roleMiner = {
              creep.moveTo(spawn);
          }
      } else {
-         let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL || s.structureType == STRUCTURE_FACTORY ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
+         let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_TERMINAL || s.structureType == STRUCTURE_FACTORY ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
          if(storagetargets){
             if(this.transferAll(creep,storagetargets) == ERR_NOT_IN_RANGE) {
                creep.moveTo(storagetargets,{ignoreCreeps:ignorecreeps})
