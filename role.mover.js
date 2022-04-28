@@ -27,12 +27,28 @@ let mover={
 	    }
         if(creep.memory.working){
             //let terminaltarget = creep.room.terminal
-            let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_LAB].includes(s.structureType)) && s.energy < s.energyCapacity))}})
+            let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_LAB].includes(s.structureType)) && s.energy < s.energyCapacity ))}})
             if(spawntarget){
+                creep.say('ref sp')
                 if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawntarget,{ignoreCreeps:ignorecreeps})
                 }
-            }/*else if(terminaltarget != creep.memory.pulledenergyfrom){
+            } else {
+                try{
+                    creep.say('finding storage')
+                    let mystorage = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getFreeCapacity()>0 )   ;}});
+                    creep.say('got storage')
+                    if(creep.transfer(mystorage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.say('MvStor')
+                        creep.moveTo(mystorage,{ignoreCreeps:ignorecreeps})
+                    } else {
+                        creep.say("Dumped")
+                    }
+                } catch(e){
+                    console.log(e)
+                }
+            }
+            /*else if(terminaltarget != creep.memory.pulledenergyfrom){
                  if(creep.transfer(terminaltarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE ) {
                     creep.say('Putting Energy')
                     creep.travelTo(terminaltarget);
@@ -83,9 +99,12 @@ let mover={
                         storagetarget=storage
                     }
                 }*/
-                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
+                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
                 if(storagetarget===undefined){
-                    storagetarget==creep.room.terminal
+                    storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
+                    if(storagetarget==undefined && creep.room.terminal){
+                        storagetarget=creep.room.terminal
+                    }
                 }
                 let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
