@@ -45,7 +45,7 @@ let Phase1 = {
                     console.log("Spawning Mover in " + room)
                     require('proc.spawning').spawnmover(room)
                 }
-                if((myroom.storage || myroom.terminal) && (creepcounts["mineralmover"] < 1 || creepcounts["mineralmover"]==undefined)){
+                if(((myroom.storage || myroom.terminal) && myroom.StructureExtractor)  && (creepcounts["mineralmover"] < 1 || creepcounts["mineralmover"]==undefined)){
                     console.log("Spawning MineralMover in " + room)
                     require('proc.spawning').spawnmineralmover(room)
                 }
@@ -66,7 +66,7 @@ let Phase1 = {
                         if(myroom.terminal.store.getUsedCapacity() == 0) {
                             //console.log("terminal is empty")
                         }else{
-                            if(myroom.terminal.store.getUsedCapacity('energy') > 10000){
+                            if(myroom.terminal.store.getUsedCapacity('energy') > 100000){
                                 console.log("Starting market loop for "+ myroom)
                                 for(mat in myroom.terminal.store){
                                     let availtosell=0

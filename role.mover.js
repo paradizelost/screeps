@@ -99,10 +99,12 @@ let mover={
                         storagetarget=storage
                     }
                 }*/
+                
                 let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
-                if(storagetarget===undefined){
+                if(storagetarget===undefined||storagetarget==null){
+                    creep.say('finding storage')
                     storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
-                    if(storagetarget==undefined && creep.room.terminal){
+                    if((storagetarget==undefined ||storagetarget==null) && creep.room.terminal){
                         storagetarget=creep.room.terminal
                     }
                 }
@@ -119,11 +121,13 @@ let mover={
                     } catch(e) {
                         console.log("oops" + e)
                     }*/
+//                    creep.say('2')
+                    //creep.say(storagetarget)
                     if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
                         creep.say('Getting Energy')
                         creep.travelTo(storagetarget);
                     }
-                    creep.memory.pulledenergyfrom=storagetarget
+                    //creep.memory.pulledenergyfrom=storagetarget
                 } else {
                     if(droppedenergy){
                         if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {

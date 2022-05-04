@@ -5,6 +5,7 @@ global.verbosity=0
 module.exports.loop = function () {
     console.log("----Start loop for "+ Game.time + '----')
     let decrementcounter = Game.time % 30
+    ///for (let key of require('Empire')) global[key] = require('Empire')[key]
     try{
     for(let name in Game.rooms){
         let myroom=Game.rooms[name]

@@ -33,7 +33,7 @@ let Phase1Worker = {
         
         if(creep.memory.working){
             let look=creep.pos.lookFor(LOOK_STRUCTURES)
-            let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.storeCapacity)  ;}});
+            let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.store.getCapacity())  ;}});
              if(creep.room.memory.NeedsRecharge==1){
                  if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
 	                   creep.say(creep.room.controller.ticksToDowngrade + " of " +  CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2)
@@ -55,7 +55,7 @@ let Phase1Worker = {
                     if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(target,{ignoreCreeps:ignorecreeps})
                 }
-            } else if(storagetargets){
+            } else if(storagetargets){// && creep.room.controller.level*.02 < creep.room.storage.store.getUsedCapacity('energy')/creep.room.storage.store.getCapacity()){
                  if(creep.transfer(storagetargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                      if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(storagetargets,{ignoreCreeps:ignorecreeps})
@@ -95,8 +95,27 @@ let Phase1Worker = {
             if((droppedenergy == undefined) && (tombstone==undefined)){
                 if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
                 let mysource=Game.getObjectById(creep.memory.destsource.id)
-                if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(mysource,{ignoreCreeps:ignorecreeps})
+                try{
+                    if(mysource.energy==0){
+                        //creep.say("No Energy Left to get")
+                        let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 1000)   ;}});
+                        if(storagetarget===undefined){
+                            storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 100000)   ;}});
+                            if(storagetarget==undefined && creep.room.terminal && creep.room.terminal.store.getUsedCapacity('energy') > 100000){
+                                storagetarget=creep.room.terminal
+                            }
+                        }
+                        if(storagetarget != undefined && creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
+                            //creep.say('Getting Energy')
+                            creep.travelTo(storagetarget);
+                        }
+                    }else {
+                        if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
+                            creep.moveTo(mysource,{ignoreCreeps:ignorecreeps})
+                        }
+                    }
+                } catch(e){
+                    console.log(e)
                 }
             } else {
                 if(droppedenergy){
