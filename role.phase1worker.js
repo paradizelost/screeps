@@ -55,7 +55,7 @@ let Phase1Worker = {
                     if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(target,{ignoreCreeps:ignorecreeps})
                 }
-            } else if(storagetargets){// && creep.room.controller.level*.02 < creep.room.storage.store.getUsedCapacity('energy')/creep.room.storage.store.getCapacity()){
+            } else if(storagetargets && creep.room.controller.level*125000> creep.room.storage.store.getUsedCapacity('energy')){
                  if(creep.transfer(storagetargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                      if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(storagetargets,{ignoreCreeps:ignorecreeps})
