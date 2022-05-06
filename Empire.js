@@ -56,7 +56,14 @@ module.exports = {
     spawnminer: function(){
         for(let myroom of _.filter(Game.rooms, 'controller.my')) {
             let name = myroom.name
-            require('proc.spawning').spawnminer(name)
+            require('proc.spawning').spawnsourceminer(name)
+        }
+         return 'Spawning initiated'
+    },
+    spawnmover: function(){
+        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+            let name = myroom.name
+            require('proc.spawning').spawnmover(name)
         }
          return 'Spawning initiated'
     },

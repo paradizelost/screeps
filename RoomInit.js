@@ -21,6 +21,7 @@ let initroom = {
         Game.rooms[name].memory.mineralminablepositions = mineralminablepositions
         let minablepositions = 0
         let srcs = Game.rooms[name].find(FIND_SOURCES);
+        Game.rooms[name].memory.sourcecount=srcs.length
         for(let i = 0;i<srcs.length;i++)
         {
             minablepositions = minablepositions + this.computeSourceAccessPoints(Game.rooms[name],srcs[i])

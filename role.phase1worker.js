@@ -67,7 +67,7 @@ let Phase1Worker = {
                        creep.moveTo(Game.rooms[creep.memory.assignedroom].controller,{ignoreCreeps:ignorecreeps})
                 }
             }
-        } else if ((creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}}))  ) {
+        } else if (creep.pos.findClosestByRange(FIND_MY_SPAWNS) && (creep.ticksToLive < 300 || creep.ticksToLive <= creep.memory.renewto) && (Game.rooms[creep.room.name].find(FIND_MY_SPAWNS, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}}))  ) {
             if(creep.memory.renewto == undefined){
                 creep.memory.renewto = 1200
             } else {
@@ -78,36 +78,54 @@ let Phase1Worker = {
             creep.say('renewing')
             console.log(creep.name + ": " + creep.ticksToLive + " " + creep.memory.renewto)
             let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
-            if(creep.room.memory.NeedsRecharge==1 && creep.carry.energy>0){
-                if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                      creep.say(creep.room.controller.ticksToDowngrade + " of " +  (CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2))
-                      creep.moveTo(creep.room.controller)
-               }
+            if(spawn != undefined && spawn!= null){
+                if(creep.room.memory.NeedsRecharge==1 && creep.carry.energy>0){
+                    if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                            creep.say(creep.room.controller.ticksToDowngrade + " of " +  (CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2))
+                            creep.moveTo(creep.room.controller)
+                    }
+                } else {
+                    
+                    if(spawn.renewCreep(creep) == ERR_NOT_IN_RANGE){
+                        creep.say('MVSP')
+                        creep.moveTo(spawn);
+                    }   
+                }
             } else {
-               if(spawn.renewCreep(creep) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(spawn);
-                }   
+                creep.memory.renewto=1
             }
         } else {
             let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
             let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
-            //console.log(tombstones)
-            if((droppedenergy == undefined) && (tombstone==undefined)){
+            //console.log(tombstone)
+            if((droppedenergy == undefined || droppedenergy==null) && (tombstone==undefined || tombstone==null)){
+                creep.say("1")
                 if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
                 let mysource=Game.getObjectById(creep.memory.destsource.id)
                 try{
-                    if(mysource.energy==0){
+                    //console.log(creep.room.memory.creepcounts)
+                    if((mysource.energy==0 || ((creep.room.memory.creepcounts.sourceminer!=null ||creep.room.memory.creepcounts.sourceminer!=undefined )))){
+                        creep.say("2.1")
                         //creep.say("No Energy Left to get")
-                        let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 1000)   ;}});
-                        if(storagetarget===undefined){
-                            storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 100000)   ;}});
-                            if(storagetarget==undefined && creep.room.terminal && creep.room.terminal.store.getUsedCapacity('energy') > 100000){
+                        let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 100)   ;}});
+                        if(storagetarget===undefined || storagetarget==null){
+                            creep.say('2.2')
+                            storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= creep.room.controller.level * 125000)   ;}});
+                            if((storagetarget===undefined || storagetarget==null) && creep.room.terminal && creep.room.terminal.store.getUsedCapacity('energy') > 100000){
+                                creep.say('2.3')
                                 storagetarget=creep.room.terminal
                             }
                         }
-                        if(storagetarget != undefined && creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
+                        //console.log(Game.getObjectById(storagetarget.id))
+                        if((storagetarget != undefined || storagetarget != null) && creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
+                            creep.say('3')
                             //creep.say('Getting Energy')
                             creep.travelTo(storagetarget);
+                        } else {
+                            if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
+                                creep.moveTo(mysource,{ignoreCreeps:ignorecreeps})
+                            }
+                            creep.say("NSE-Ming")
                         }
                     }else {
                         if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){

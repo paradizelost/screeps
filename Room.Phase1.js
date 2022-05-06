@@ -2,15 +2,18 @@ let Phase1 = {
      run: function(room) {
         let myroom=Game.rooms[room]
          require('assignsources').tick(room)
+         creepcounts = _.countBy(myroom.find(FIND_MY_CREEPS), c => c.memory.role)
+         myroom.memory.creepcounts=creepcounts
+         myroom.memory.movercount=creepcounts["mover"]
          if(Game.time % 10 === 0){
             //console.log('processing spawn')
 
             let myspawns = myroom.find(FIND_MY_SPAWNS)
+            
             if(myspawns.length>0){
                 let myspawn = myspawns[0]
                 let creepcount = myroom.find(FIND_MY_CREEPS).length
-                creepcounts = _.countBy(myroom.find(FIND_MY_CREEPS), c => c.memory.role)
-                myroom.memory.movercount=creepcounts["mover"]
+                
                 let workerrolename = 'phase' + myroom.memory.phase +'worker'
                 let sources = myroom.find(FIND_SOURCES )
                 if(myroom.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[myroom.controller.level] * .2 ){
@@ -26,13 +29,13 @@ let Phase1 = {
                     console.log(creepcounts[workerrolename])
                     console.log(myroom.energyAvailable + " of " + myroom.energyCapacityAvailable)
                 }
-                if(myroom.memory.minablepositions >= 3 ||myroom.memory.minablepositions==undefined ){
+                if((myroom.memory.minablepositions >= 3 ||myroom.memory.minablepositions==undefined) && (creepcounts["mover"] == 0 || creepcounts["mover"]==undefined) ){
                     if((((creepcounts[workerrolename]< (myroom.memory.minablepositions + 1) || creepcounts[workerrolename]==undefined)  && myroom.energyAvailable >= myroom.energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && myroom.energyAvailable>100)) {
                         console.log('Spawning worker in '  + room)
                         require('proc.spawning').spawnworker(room)
                     }
-                } else {
-                    if((((creepcounts['sourceminer']< myroom.memory.minablepositions) || creepcounts['sourceminer']==undefined)  && myroom.energyAvailable >= myroom.energyCapacityAvailable) || ((creepcounts['sourceminer']==0 || creepcounts['sourceminer']==undefined ) && myroom.energyAvailable>100)) {
+                } else {                    
+                    if((((creepcounts['sourceminer']< myroom.find(FIND_SOURCES).length) || creepcounts['sourceminer']==undefined)  ) || ((creepcounts['sourceminer']==0 || creepcounts['sourceminer']==undefined ) && myroom.energyAvailable>100)) {
                         console.log('Spawning sourceminer in '  + room)
                         require('proc.spawning').spawnsourceminer(room)
                     }

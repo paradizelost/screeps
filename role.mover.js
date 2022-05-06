@@ -100,7 +100,7 @@ let mover={
                     }
                 }*/
                 
-                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
+                let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 1000)   ;}});
                 if(storagetarget===undefined||storagetarget==null){
                     creep.say('finding storage')
                     storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
@@ -110,7 +110,8 @@ let mover={
                 }
                 let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
-                if((droppedenergy == undefined) && (tombstone==undefined)){
+                let ruins=creep.pos.findClosestByRange(FIND_RUINS, {filter: ruin => ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0});
+                if((droppedenergy == undefined) && (tombstone==undefined) && (ruins==undefined)){
                     /*try{
                 //        console.log(storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity())
                         if(storagetarget.store.getUsedCapacity('energy')< 1000 && (storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity() < .5 )){
@@ -129,7 +130,14 @@ let mover={
                     }
                     //creep.memory.pulledenergyfrom=storagetarget
                 } else {
-                    if(droppedenergy){
+                    if(ruins){
+                        if(creep.withdraw(ruins,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            if(global.verbosity>0){
+                                creep.say("MTRU");
+                            }
+                            creep.moveTo(ruins,{ignoreCreeps:ignorecreeps})           
+                        }
+                    }else if(droppedenergy){
                         if(creep.pickup(droppedenergy) == ERR_NOT_IN_RANGE) {
                             if(global.verbosity>0){
                                 creep.say("MTDE");
