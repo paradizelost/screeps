@@ -36,7 +36,7 @@ let mover={
             } else {
                 try{
                     creep.say('finding storage')
-                    let mystorage = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getFreeCapacity()>0 )   ;}});
+                    let mystorage = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER) &&  s.store.getFreeCapacity()>0 )   ;}});
                     creep.say('got storage')
                     if(creep.transfer(mystorage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         creep.say('MvStor')
@@ -101,13 +101,6 @@ let mover={
                 }*/
                 
                 let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 1000)   ;}});
-                if(storagetarget===undefined||storagetarget==null){
-                    creep.say('finding storage')
-                    storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
-                    if((storagetarget==undefined ||storagetarget==null) && creep.room.terminal){
-                        storagetarget=creep.room.terminal
-                    }
-                }
                 let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
                 let ruins=creep.pos.findClosestByRange(FIND_RUINS, {filter: ruin => ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0});
@@ -124,6 +117,13 @@ let mover={
                     }*/
 //                    creep.say('2')
                     //creep.say(storagetarget)
+                    if(storagetarget===undefined||storagetarget==null){
+                        creep.say('finding storage')
+                        storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
+                        if((storagetarget==undefined ||storagetarget==null) && creep.room.terminal){
+                            storagetarget=creep.room.terminal
+                        }
+                    }
                     if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
                         creep.say('Getting Energy')
                         creep.travelTo(storagetarget);
