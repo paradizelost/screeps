@@ -5,6 +5,7 @@ let Phase1 = {
          creepcounts = _.countBy(myroom.find(FIND_MY_CREEPS), c => c.memory.role)
          myroom.memory.creepcounts=creepcounts
          myroom.memory.movercount=creepcounts["mover"]
+         let links=myroom.find(FIND_STRUCTURES, {filter: (s) =>{return ( s.structureType==STRUCTURE_LINK)}})
          if(Game.time % 10 === 0){
             //console.log('processing spawn')
 
@@ -107,6 +108,43 @@ let Phase1 = {
                 }
             }
         }
+        /*
+        if(links!=null && links!=undefined){
+            if(links.length>1){
+                console.log('1')
+                let sourcelink=links[0]
+                let destlinks
+                try{
+                    for(let idx in links.length){
+                        link = links[idx]
+                        console.log('2')
+                        console.log(link.id)
+                        console.log(sourcelink.id)
+                        link.store.getUsedCapacity('energy')
+                        sourcelink.store.getUsedCapacity('energy')
+                        if(link.store.getUsedCapacity('energy') > sourcelink.store.getUsedCapacity('energy')){
+                            console.log("2.1")
+                            destlinks += sourcelink
+                            sourcelink=link
+                        } else if (link.store.getUsedCapacity('energy') == sourcelink.store.getUsedCapacity('energy')){
+                            console.log('2.2')
+                        }
+                        idx++
+                    }
+                    for(let destlink in destlinks){
+                        if(destlink != undefined && destlink != null){
+                            if(destlink.store.getUsedCapacity() < destlink.store.getCapacity()){
+                                console.log('3')
+                                sourcelink.transferEnergy(destlink)
+                            }
+                        }
+                    }
+                } catch(e){
+                    console.log(e)
+                }
+            }
+        }
+        */
         if(myroom.controller.level>2){         }
      }
 };

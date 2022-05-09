@@ -39,7 +39,7 @@ let Phase1Worker = {
 	                   creep.say(creep.room.controller.ticksToDowngrade + " of " +  CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2)
                        creep.moveTo(creep.room.controller)
                 }
-             } else if((creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].includes(s.structureType)) && s.energy < s.energyCapacity))}}))&& (creep.room.memory.movercount<1||creep.room.memory.movercount==undefined)){
+             } else if((creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ((([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER,STRUCTURE_LINK].includes(s.structureType)) && s.energy < s.energyCapacity))}}))&& (creep.room.memory.movercount<1||creep.room.memory.movercount==undefined)){
                 let spawntarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return (((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_TOWER) && s.energy < s.energyCapacity))}});
                 if(creep.transfer(spawntarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(spawntarget,{ignoreCreeps:ignorecreeps})
@@ -55,7 +55,7 @@ let Phase1Worker = {
                     if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(target,{ignoreCreeps:ignorecreeps})
                 }
-            } else if(storagetargets && creep.room.controller.level*125000> creep.room.storage.store.getUsedCapacity('energy')){
+            } else if(storagetargets && creep.room.storage&& creep.room.controller.level*125000> creep.room.storage.store.getUsedCapacity('energy')){
                  if(creep.transfer(storagetargets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                      if (road.length > 0) {creep.repair(road);}
                     creep.moveTo(storagetargets,{ignoreCreeps:ignorecreeps})
@@ -107,7 +107,7 @@ let Phase1Worker = {
                     if((mysource.energy==0 || ((creep.room.memory.creepcounts.sourceminer!=null ||creep.room.memory.creepcounts.sourceminer!=undefined )))){
                         creep.say("2.1")
                         //creep.say("No Energy Left to get")
-                        let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 100)   ;}});
+                        let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_LINK) &&  s.store.getUsedCapacity('energy') >= 100)   ;}});
                         if(storagetarget===undefined || storagetarget==null){
                             creep.say('2.2')
                             storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= creep.room.controller.level * 125000)   ;}});
