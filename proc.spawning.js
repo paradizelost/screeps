@@ -94,7 +94,11 @@ let buildparts = {
                                 break;
                             }
                         }
-                        let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"phase" + Game.rooms[roomname].memory.phase +"worker"})
+                        if(tobuild != null && tobuild != undefined){
+                            let newcreep = spawn.createCreep(tobuild,CreepName,{spawnedat: Game.time,role:"phase" + Game.rooms[roomname].memory.phase +"worker"})
+                        } else {
+                            console.log("not enough e in " + roomname + " to spawn")
+                        }
                     }}
 
     },

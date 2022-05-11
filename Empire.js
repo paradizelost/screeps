@@ -39,58 +39,93 @@ module.exports = {
         }
          return 'Spawning initiated'
     },
-    spawnnrworker: function(){
-        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
-            let name = myroom.name
+    spawnnrworker: function(name){
+        if(name==null || name== undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                require('proc.spawning').spawnnrworker(name)
+            }
+        } else {
             require('proc.spawning').spawnnrworker(name)
         }
          return 'Spawning initiated'
     },
-    spawnworker: function(){
-        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
-            let name = myroom.name
+    spawnworker: function(name){
+        if(name!=null && name!= undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                require('proc.spawning').spawnworker(name)
+            }
+        } else {
             require('proc.spawning').spawnworker(name)
         }
          return 'Spawning initiated'
     },
-    spawnminer: function(){
-        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
-            let name = myroom.name
+    spawnminer: function(name){
+        if(name!=null && name!= undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                require('proc.spawning').spawnsourceminer(name)
+            }
+        } else {
             require('proc.spawning').spawnsourceminer(name)
         }
          return 'Spawning initiated'
     },
-    spawnmover: function(){
-        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
-            let name = myroom.name
+    spawnmover: function(name){
+        if(name!=null && name!= undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                require('proc.spawning').spawnmover(name)
+            }
+        } else {
             require('proc.spawning').spawnmover(name)
         }
          return 'Spawning initiated'
     },
-    spawnclaimer: function(){
-        for(let myroom of _.filter(Game.rooms, 'controller.my')) {
-            let name = myroom.name
+    spawnclaimer: function(name){
+        if(name!=null && name!= undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                require('proc.spawning').spawnclaimer(name)
+            }
+        } else {
             require('proc.spawning').spawnclaimer(name)
         }
          return 'Spawning initiated'
     },
-    removeConstruction: function(roomname){
-        _.invoke(Game.rooms[roomname].find(FIND_MY_CONSTRUCTION_SITES), 'remove')
+    removeConstruction: function(name){
+        if(name==null || name== undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                _.invoke(Game.rooms[name].find(FIND_MY_CONSTRUCTION_SITES), 'remove')
+            }
+        } else {
+            _.invoke(Game.rooms[name].find(FIND_MY_CONSTRUCTION_SITES), 'remove')
+        }
     },
     removeAllConstruction: function(){
         _.invoke(_.map(Game.constructionSites, (x)=>x), 'remove')
     },
-    removeWalls: function(roomname){
-        Game.rooms[roomname].find(FIND_STRUCTURES, {filter: s => s.structureType === STRUCTURE_WALL}).forEach(s => s.destroy())
+    removeWalls: function(name){
+        if(name==null || name== undefined){
+            for(let myroom of _.filter(Game.rooms, 'controller.my')) {
+                let name = myroom.name
+                Game.rooms[name].find(FIND_STRUCTURES, {filter: s => s.structureType === STRUCTURE_WALL}).forEach(s => s.destroy())
+            }
+        } else {
+            Game.rooms[name].find(FIND_STRUCTURES, {filter: s => s.structureType === STRUCTURE_WALL}).forEach(s => s.destroy())
+        }
     },
-    removeRoads: function(roomname,hitsleft){
-        Game.rooms[roomname].find(FIND_STRUCTURES, {filter: s => (s.structureType === STRUCTURE_ROAD && s.hits < hitsleft)}).forEach(s => s.destroy())
+    removeRoads: function(name,hitsleft){
+        Game.rooms[name].find(FIND_STRUCTURES, {filter: s => (s.structureType === STRUCTURE_ROAD && s.hits < hitsleft)}).forEach(s => s.destroy())
         return "done"
     },
-    sellEnergy: function(roomname){
+    sellEnergy: function(name){
         let myorders = Game.market.getAllOrders(order=>order.resourceType == RESOURCE_ENERGY && order.type == ORDER_SELL)
     },
     computeSourceAccess: function(){
+        
         for(let myroom of _.filter(Game.rooms, 'controller.my')) {
             let name = myroom.name
             let minablepositions = 0
