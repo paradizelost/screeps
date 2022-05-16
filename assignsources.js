@@ -1,6 +1,6 @@
 let assignMiners = {
      tick: function(roomname) {
-        let sources = Game.rooms[roomname].find(FIND_SOURCES );
+        let sources = Game.rooms[roomname].find(FIND_SOURCES);
         for(let source of sources){
                 let allminers = Game.rooms[roomname].find(FIND_MY_CREEPS, {filter: (creep) =>{return ( creep.memory.role=='sourceminer'|| creep.memory.role == ("phase" + Game.rooms[roomname].memory.phase + "worker") )}});
                 //let allstorage = Game.rooms[name].find(FIND_STRUCTURES, {filter: (s) => {return ( s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE)}})

@@ -49,7 +49,7 @@ let Phase0Worker = {
             let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: {resourceType: RESOURCE_ENERGY}});
             let ruins=creep.pos.findClosestByRange(FIND_RUINS, {filter: ruin => ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0});
             if(droppedenergy == undefined && ruins==undefined){
-                if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
+                if((Game.getObjectById(creep.memory.destsource.id)==undefined)){creep.memory.destsource=undefined}
                 let mysource=Game.getObjectById(creep.memory.destsource.id)
                 //mysource=creep.pos.findClosestByRange( FIND_SOURCES )
                 if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
