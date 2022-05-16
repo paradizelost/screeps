@@ -71,52 +71,13 @@ let mover={
             }
         } else {
             if(filllevel < creep.carryCapacity){
-                /*
-                let nearestcontainer = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER ) &&  s.store.getUsedCapacity('energy') >= 10)  ;}});
-                if(creep.room.terminal){
-                    let terminal = creep.room.terminal
-                    let terminalenergy= terminal.store.getUsedCapacity('energy')
-                }
-                if(creep.room.storage){
-                    let storage = creep.room.storage
-                    let storageenergy=storage.store.getUsedCapacity('energy')
-                }
-                //console.log("Storage: " + storage.store.getUsedCapacity('energy'))
-                //console.log("Container: " + nearestcontainer.store.getUsedCapacity('energy')
-                try{
-                    if(nearestcontainer == null){
-                        
-                    }else {
-                        storagetarget = nearestcontainer
-                    }
-                }catch{
-                    if(storageenergy > 0){
-                        storagetarget = storage
-                    } else if ( terminalenergy > 0) { 
-                        storagetarget = terminal
-                    } else {
-                        console.log("we're out of energy!")
-                        storagetarget=storage
-                    }
-                }*/
-                
                 let storagetarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_CONTAINER) &&  s.store.getUsedCapacity('energy') >= 1000)   ;}});
                 let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>10)}});
                 let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
                 let ruins=creep.pos.findClosestByRange(FIND_RUINS, {filter: ruin => ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0});
-                if((droppedenergy == undefined) && (tombstone==undefined) && (ruins==undefined)){
-                    /*try{
-                //        console.log(storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity())
-                        if(storagetarget.store.getUsedCapacity('energy')< 1000 && (storagetarget.store.getUsedCapacity('energy')/storagetarget.store.getCapacity() < .5 )){
-                                //console.log("too much crap")
-                                //console.log(storagetarget.store.getUsedCapacity())
-                                //creep.travelTo(storagetarget);
-                        }
-                    } catch(e) {
-                        console.log("oops" + e)
-                    }*/
-//                    creep.say('2')
-                    //creep.say(storagetarget)
+                console.log(creep.room.name + " " + creep.name + " " + creep.room.energyAvailable+":"+ creep.room.energyCapacityAvailable )
+                if(creep.room.energyAvailable < creep.room.energyCapacityAvailable  || ((droppedenergy == undefined) && (tombstone==undefined) && (ruins==undefined))){
+                    
                     if(storagetarget===undefined||storagetarget==null){
                         creep.say('finding storage')
                         storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE) &&  s.store.getUsedCapacity('energy') >= 10)   ;}});
@@ -125,10 +86,9 @@ let mover={
                         }
                     }
                     if(creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
-                        creep.say('Getting Energy')
+                        creep.say('GEST')
                         creep.travelTo(storagetarget);
                     }
-                    //creep.memory.pulledenergyfrom=storagetarget
                 } else {
                     if(ruins){
                         if(creep.withdraw(ruins,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

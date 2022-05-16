@@ -1,5 +1,6 @@
 let rolesourceMiner = {
     run: function(creep) {
+        try{
         //if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
         let ignorecreeps=true
         //console.log('running sourceminer')
@@ -26,10 +27,58 @@ let rolesourceMiner = {
                 }   
             }
         } else{
-            if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(mysource);
+            try{
+                creep.say('1')
+            destcontainer=Game.getObjectById(creep.memory.destsource.id).pos.findInRange(FIND_STRUCTURES,1,{filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity() > 0)  ;}})
+            
+            if(destcontainer == undefined || destcontainer == null){
+                creep.say('2')
+                console.log(creep.name + " " + destcontainer[0].id)
+                creep.travelTo(destcontainer[0])
+                if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
+                    //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
+                    creep.travelTo(destcontainer[0],{ignoreCreeps:ignorecreeps});
+                }
+            } else {
+                creep.say('3')
+                if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
+                    //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
+                    creep.travelTo(mysource,{ignoreCreeps:ignorecreeps});
+                }
+            }
+            } catch(e){
+                console.log(e)
             }
         }
-    }   
+    }   catch(e){
+            console.log(e)
+        }
+    },
+    computeSourceAccessPoints: function(room, source){
+       const roomTerrain = room.getTerrain();
+       var accessPoints = 0;
+       for(var x = -1;x<=1;x++)
+       {
+           for(var y = -1;y<=1;y++)
+           {
+               if(x==0 && y==0){continue;}
+               if(roomTerrain.get(source.pos.x+x,source.pos.y+y)!=1){accessPoints++;}
+           }
+       }
+       return accessPoints;
+   },
+    checkminablepositions: function(name){
+       let x = this.pos.x;
+       let y = this.pos.y;
+       let walkable = this.room.lookForAtArea(
+           LOOK_TERRAIN,
+           y - 1,  // top
+           x - 1,  // left
+           y + 1,  // bottom
+           x + 1,  // right
+           true    // asArray
+       ).filter(o => o[LOOK_TERRAIN] !== 'wall');
+       return walkable.length;
+    }
 };
 module.exports = rolesourceMiner;

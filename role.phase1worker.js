@@ -33,7 +33,7 @@ let Phase1Worker = {
         
         if(creep.memory.working){
             let look=creep.pos.lookFor(LOOK_STRUCTURES)
-            let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.store.getCapacity())  ;}});
+            let storagetargets = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL ) &&  _.sum(s.store) < s.store.getCapacity())  ;}});
              if(creep.room.memory.NeedsRecharge==1){
                  if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
 	                   creep.say(creep.room.controller.ticksToDowngrade + " of " +  CONTROLLER_DOWNGRADE[creep.room.controller.level] * .2)
@@ -97,8 +97,10 @@ let Phase1Worker = {
         } else {
             let droppedenergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) =>{return ( r.resourceType==RESOURCE_ENERGY&& r.amount>200)}});
             let tombstone =  creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (r) =>{return ( r.store[RESOURCE_ENERGY]>200)}});
+            let ruins=creep.pos.findClosestByRange(FIND_RUINS, {filter: ruin => ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0});
+            let spawn= creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {return ( s.structureType == STRUCTURE_SPAWN)}});
             //console.log(tombstone)
-            if((droppedenergy == undefined || droppedenergy==null) && (tombstone==undefined || tombstone==null)){
+            if((droppedenergy == undefined || droppedenergy==null) && (tombstone==undefined || tombstone==null) && (spawn!=undefined || spawn!=null) && (ruins==undefined  || ruins==null)){
                 creep.say("1")
                 if(Game.getObjectById(creep.memory.destsource.id)==undefined){creep.memory.destsource=undefined}
                 let mysource=Game.getObjectById(creep.memory.destsource.id)
@@ -117,10 +119,12 @@ let Phase1Worker = {
                             }
                         }
                         //console.log(Game.getObjectById(storagetarget.id))
-                        if((storagetarget != undefined || storagetarget != null) && creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE) {
-                            creep.say('3')
-                            //creep.say('Getting Energy')
-                            creep.travelTo(storagetarget);
+                        if((storagetarget != undefined || storagetarget != null)){
+                            if( creep.withdraw(storagetarget,RESOURCE_ENERGY)== ERR_NOT_IN_RANGE){
+                                creep.say('3')
+                                //creep.say('Getting Energy')
+                                creep.travelTo(storagetarget);
+                            }
                         } else {
                             if(creep.harvest(mysource) == ERR_NOT_IN_RANGE){
                                 creep.moveTo(mysource,{ignoreCreeps:ignorecreeps})
@@ -143,13 +147,32 @@ let Phase1Worker = {
                         }
                         creep.moveTo(droppedenergy,{ignoreCreeps:ignorecreeps})           
                     }
-                } else {
+                } else if (tombstone) {
                     if(creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         if(global.verbosity>0){
                             creep.say("MTTS");
                         }
                         creep.moveTo(tombstone.pos,{ignoreCreeps:ignorecreeps})           
                     }
+                } else if (ruins){
+                    if(creep.withdraw(ruins,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        if(global.verbosity>0){
+                            creep.say("MTTS");
+                        }
+                        creep.moveTo(ruins,{ignoreCreeps:ignorecreeps})           
+                    }
+                } else if(spawn==null || spawn==undefined){
+                    storagetarget=creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => {return ((s.structureType == STRUCTURE_STORAGE))   ;}});
+                    if(storagetarget){
+                        if(creep.withdraw(storagetarget,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            if(global.verbosity>0){
+                                creep.say("MTTS");
+                            }
+                            creep.moveTo(storagetarget,{ignoreCreeps:ignorecreeps})           
+                        }
+                    }
+                } else {
+                    creep.say("IDK")
                 }
             }
         }
