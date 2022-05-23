@@ -31,11 +31,7 @@ let buildparts = {
                         if(!spawn.spawning){
                         let tobuild=[]
                         for(let totry of [
-                            [WORK,WORK,WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,WORK,MOVE],
-                            [WORK,WORK,MOVE],
-                            [WORK,MOVE]
+                            [WORK,WORK,WORK,WORK,WORK,MOVE]
                             ]){
                             let ispossible = spawn.canCreateCreep(totry)
                             if(ispossible==OK){

@@ -22,7 +22,11 @@ module.exports.loop = function () {
          }
          if(myroom.controller!==undefined){
             myroom.memory.tickssofar++
+            try{
             require('Room.Phase' + myroom.memory.phase).run(name)
+            } catch(e){
+                console.log(e)
+            }
          }
          
          for(let pos in myroom.memory.maphits){

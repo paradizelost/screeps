@@ -164,5 +164,37 @@ module.exports = {
             }
         }
         return accessPoints;
+    },
+    computeSpawnLevels: function(room){
+        myroom=Game.rooms[room]
+        creepcounts=myroom.memory.creepcounts
+        let workerrolename = 'phase' + myroom.memory.phase +'worker'
+        if((myroom.memory.minablepositions >= 3 ||myroom.memory.minablepositions==undefined) && (creepcounts["mover"] == 0 || creepcounts["mover"]==undefined) ){
+            if((((creepcounts[workerrolename]< (myroom.memory.minablepositions + 1) || creepcounts[workerrolename]==undefined)  && myroom.energyAvailable >= myroom.energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && myroom.energyAvailable>100)) {
+                console.log('Spawning worker in '  + room)
+            }
+        } else {                    
+            if((((creepcounts['sourceminer']< myroom.find(FIND_SOURCES).length) || creepcounts['sourceminer']==undefined)  ) || ((creepcounts['sourceminer']==0 || creepcounts['sourceminer']==undefined ) && myroom.energyAvailable>100)) {
+                console.log('Spawning sourceminer in '  + room)
+            }
+            if((((creepcounts[workerrolename]< (myroom.memory.minablepositions+1) || creepcounts[workerrolename]==undefined)  && myroom.energyAvailable >= myroom.energyCapacityAvailable) ) || ((creepcounts[workerrolename]==0 || creepcounts[workerrolename]==undefined ) && myroom.energyAvailable>100)) {
+                console.log('Spawning worker in '  + room)
+            }
+        }
+        if((myroom.storage!=undefined || myroom.terminal!=undefined) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
+            console.log("Spawning Mover in " + room)
+        }
+        if(((myroom.storage || myroom.terminal) && myroom.StructureExtractor)  && (creepcounts["mineralmover"] < 1 || creepcounts["mineralmover"]==undefined)){
+            console.log("Spawning MineralMover in " + room)
+        }
+        if((myroom.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTRACTOR}}).length > 0)&&(creepcounts["miner"] < myroom.memory.mineralminablepositions || creepcounts["miner"]==undefined)&&(myroom.energyAvailable >= myroom.energyCapacityAvailable)){
+            if(myroom.find(FIND_MINERALS)[0].ticksToRegeneration == undefined || myroom.find(FIND_MINERALS)[0].ticksToRegeneration < 1000 ){
+                console.log("Spawning Miner in "  + room)
+            } else { 
+                if(Game.flags.debug && Game.flags.debug.room == myroom){
+                    console.log("Not spawning miner in " + room + ", waiting for regen")
+                }
+            }
+        }
     }
 };

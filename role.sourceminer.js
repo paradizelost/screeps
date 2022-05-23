@@ -29,23 +29,23 @@ let rolesourceMiner = {
         } else{
             try{
                 creep.say('1')
-            destcontainer=Game.getObjectById(creep.memory.destsource.id).pos.findInRange(FIND_STRUCTURES,1,{filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity() > 0)  ;}})
-            
-            if(destcontainer == undefined || destcontainer == null){
-                creep.say('2')
-                console.log(creep.name + " " + destcontainer[0].id)
-                creep.travelTo(destcontainer[0])
-                if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
-                    //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
-                    creep.travelTo(destcontainer[0],{ignoreCreeps:ignorecreeps});
+                let destcontainer=Game.getObjectById(creep.memory.destsource.id).pos.findInRange(FIND_STRUCTURES,1,{filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity() > 0)  ;}})
+                //console.log(creep.room.name + " " + destcontainer)
+                if(destcontainer != undefined || destcontainer != null){
+                    creep.say('2')
+                    console.log(creep.name + " " + destcontainer[0].id)
+                    creep.travelTo(destcontainer[0])
+                    if(creep.harvest(mysource) == ERR_NOT_IN_RANGE || creep.harvest(mysource)==ERR_NOT_ENOUGH_RESOURCES) {
+                        //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
+                        creep.travelTo(destcontainer[0],{ignoreCreeps:ignorecreeps});
+                    }
+                } else {
+                    creep.say('3')
+                    if(creep.harvest(mysource) == ERR_NOT_IN_RANGE|| creep.harvest(mysource)==ERR_NOT_ENOUGH_RESOURCES) {
+                        //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
+                        creep.travelTo(mysource,{ignoreCreeps:ignorecreeps});
+                    }
                 }
-            } else {
-                creep.say('3')
-                if(creep.harvest(mysource) == ERR_NOT_IN_RANGE) {
-                    //let mycontainer = creep.find(FIND_STRUCTURES, {filter: (s) => {return (s.structureType == STRUCTURE_CONTAINER)  ;}});
-                    creep.travelTo(mysource,{ignoreCreeps:ignorecreeps});
-                }
-            }
             } catch(e){
                 console.log(e)
             }

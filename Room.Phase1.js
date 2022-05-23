@@ -6,11 +6,25 @@ let Phase1 = {
          myroom.memory.creepcounts=creepcounts
          myroom.memory.movercount=creepcounts["mover"]
          let links=myroom.find(FIND_STRUCTURES, {filter: (s) =>{return ( s.structureType==STRUCTURE_LINK)}})
+         let constructionSites=myroom.find(FIND_CONSTRUCTION_SITES)
+        if(constructionSites.length > 0){
+            if(myroom.memory.currentconstruction!=undefined && myroom.memory.currentconstruction!=null){
+                if(Game.getObjectById(myroom.memory.currentconstruction.id)){
+
+                } else {
+                    myroom.memory.currentconstruction=constructionSites[0]
+                }
+            } else {
+                myroom.memory.currentconstruction=constructionSites[0]
+            }
+        } else {
+            console.log(myroom.name+" No constructions")
+            delete myroom.memory.currentconstruction
+        }
          if(Game.time % 10 === 0){
             //console.log('processing spawn')
 
             let myspawns = myroom.find(FIND_MY_SPAWNS)
-            
             if(myspawns.length>0){
                 let myspawn = myspawns[0]
                 let creepcount = myroom.find(FIND_MY_CREEPS).length
@@ -45,7 +59,7 @@ let Phase1 = {
                         require('proc.spawning').spawnworker(room)
                     }
                 }
-                if((myroom.storage || myroom.terminal) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
+                if((myroom.storage!=undefined || myroom.terminal!=undefined) && (creepcounts["mover"] < 2 || creepcounts["mover"]==undefined)){
                     console.log("Spawning Mover in " + room)
                     require('proc.spawning').spawnmover(room)
                 }
@@ -62,6 +76,7 @@ let Phase1 = {
             }
         }
         if(Game.time % 4 === 0){
+            /*
             if(myroom.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TERMINAL}}).length > 0){
                 //console.log("starting market check for room " + room)
                 try{
@@ -106,7 +121,7 @@ let Phase1 = {
                     console.log("Myroom" + myroom)
                     console.log(e)
                 }
-            }
+            }*/
         }
         /*
         if(links!=null && links!=undefined){

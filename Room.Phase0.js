@@ -12,7 +12,7 @@ let Phase0 = {
              let newworkerrolename = 'phase' + Game.rooms[room].memory.phase + 'worker'
              for(let mycreep in creeps){
                  creep=creeps[mycreep]
-                 if(creep.memory.role == workerrolename){
+                 if(creep.memory.role != newworkerrolename){
                      creep.memory.role=newworkerrolename
                  }
              }
@@ -30,7 +30,7 @@ let Phase0 = {
                    require('proc.spawning').spawnworker(room)
                  }
              } else {  }
-            if(Game.rooms[room].controller.level>1){
+            if(Game.rooms[room].controller.level>1 && Game.rooms[room].spawn){
             
              Game.rooms[room].memory.phase++
              let creeps=Game.rooms[room].find(FIND_MY_CREEPS)
