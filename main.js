@@ -25,7 +25,7 @@ module.exports.loop = function () {
             try{
             require('Room.Phase' + myroom.memory.phase).run(name)
             } catch(e){
-                console.log(e)
+                console.log(myroom.name + ": " + e)
             }
          }
          

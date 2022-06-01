@@ -30,7 +30,7 @@ let mover={
 	    }
         if(creep.room.name != creep.memory.assignedroom){
             creep.moveTo(Game.rooms[creep.memory.assignedroom].controller)
-            Game.notify(creep.name + " Not in assigned room")
+            //Game.notify(creep.name + " Not in assigned room")
         } else {
             if(creep.memory.working){
                 //let terminaltarget = creep.room.terminal

@@ -1,7 +1,9 @@
 let Phase0 = {
      run: function(room) {
          require('assignsources').tick(room)
-         creepcounts = _.countBy(Game.rooms[room].find(FIND_MY_CREEPS), c => c.memory.role) 
+         let creepcounts = _.countBy(Game.rooms[room].find(FIND_MY_CREEPS), c => c.memory.role) 
+         if(creepcounts===undefined){creepcounts['phase' + Game.rooms[room].memory.phase +'worker']=0}
+         Game.rooms[room].memory.creepcounts=creepcounts
          let myspawns = Game.rooms[room].find(FIND_MY_SPAWNS)
          let sources = Game.rooms[room].find(FIND_SOURCES )
          if(myspawns.length<1){
@@ -24,8 +26,8 @@ let Phase0 = {
          } else {
              let workerrolename = 'phase' + Game.rooms[room].memory.phase +'worker'
              console.log(room)
-             console.log(workerrolename + " : " + creepcounts[workerrolename])
-          if(((creepcounts[workerrolename]< (sources.length * 1) || creepcounts[workerrolename]==undefined) && !myspawns[0].spawning && Game.rooms[room].energyAvailable == Game.rooms[room].energyCapacityAvailable) || (creepcounts[workerrolename] ==0 && Game.rooms[room].energyAvailable==300) ){
+             console.log("room.phase0.js "+workerrolename + " : " + creepcounts[workerrolename])
+          if(( creepcounts[workerrolename] == undefined  ||(creepcounts[workerrolename]< (sources.length * 1) || creepcounts[workerrolename]==undefined) && !myspawns[0].spawning && Game.rooms[room].energyAvailable == Game.rooms[room].energyCapacityAvailable) || (creepcounts[workerrolename] ==0 && Game.rooms[room].energyAvailable==300)  ){
                 if(Game.rooms[room].energyAvailable == Game.rooms[room].energyCapacityAvailable){
                    require('proc.spawning').spawnworker(room)
                  }
